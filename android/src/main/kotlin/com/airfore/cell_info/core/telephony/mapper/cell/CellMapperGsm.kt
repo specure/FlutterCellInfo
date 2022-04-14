@@ -74,7 +74,8 @@ private fun CellSignalStrengthWcdma.mapWcdmaSignalToGsm(): SignalGsm {
 internal fun CellIdentityGsm.mapCell(
     subId: Int,
     connection: IConnection,
-    signal: SignalGsm
+    signal: SignalGsm,
+    timestamp: Long
 ): CellGsm? {
     val network = mapNetwork()
     val cid = cid.inRangeOrNull(CellGsm.CID_RANGE)
@@ -109,7 +110,8 @@ internal fun CellIdentityGsm.mapCell(
                 signal.copy(rssi = null)
             } else signal,
             band = band,
-            subscriptionId = subId
+            subscriptionId = subId,
+            timestamp = timestamp,
         )
     } else null
 }
@@ -130,7 +132,7 @@ internal fun CellIdentityGsm.mapNetwork(): Network? =
 internal fun GsmCellLocation.mapGsm(
     subId: Int,
     signalStrength: SignalStrength?,
-    network: Network?
+    network: Network?,
 ): ICell? {
     val cid = cid.inRangeOrNull(CellGsm.CID_RANGE)
     val lac = lac.inRangeOrNull(CellGsm.LAC_RANGE)
@@ -171,7 +173,8 @@ internal fun GsmCellLocation.mapGsm(
             signal = signal,
             network = network,
             connectionStatus = PrimaryConnection(),
-            subscriptionId = subId
+            subscriptionId = subId,
+            timestamp = null,
         )
     } else null
 }

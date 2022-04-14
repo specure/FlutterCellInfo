@@ -16,13 +16,20 @@ import cz.mroczis.netmonster.core.util.inRangeOrNull
  * [CellIdentityNr] -> [CellNr]
  */
 @TargetApi(Build.VERSION_CODES.Q)
-internal fun CellIdentityNr.mapCell(subId: Int, connection: IConnection, signal: SignalNr?): CellNr? {
+internal fun CellIdentityNr.mapCell(subId: Int, connection: IConnection, signal: SignalNr?, timestamp: Long): CellNr? {
     val network = Network.map(mccString, mncString)
-    val nci = nci.inRangeOrNull(CellNr.CID_RANGE)
+    // 268435455 is LTE max CID and unfortunately used as N/A value on many MTK devices...
+    val nci = nci.inRangeOrNull(CellNr.CID_RANGE)?.takeIf { it != Int.MAX_VALUE.toLong() && it != 268435455L }
     val tac = tac.inRangeOrNull(CellNr.TAC_RANGE)
     val pci = pci.inRangeOrNull(CellNr.PCI_RANGE)
     val arfcn = nrarfcn.inRangeOrNull(BandNr.DOWNLINK_EARFCN_RANGE)
-    val band = arfcn?.let { BandTableNr.map(it) }
+    val band = arfcn?.let {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            BandTableNr.map(it, bands)
+        } else {
+            BandTableNr.map(it)
+        }
+    }
 
     return CellNr(
         network = network,
@@ -32,7 +39,8 @@ internal fun CellIdentityNr.mapCell(subId: Int, connection: IConnection, signal:
         connectionStatus = connection,
         signal = signal ?: SignalNr(),
         band = band,
-        subscriptionId = subId
+        subscriptionId = subId,
+        timestamp = timestamp
     )
 }
 

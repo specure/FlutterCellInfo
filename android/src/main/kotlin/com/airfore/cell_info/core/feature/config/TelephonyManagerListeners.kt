@@ -2,11 +2,9 @@ package cz.mroczis.netmonster.core.feature.config
 
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.annotation.AnyThread
 import cz.mroczis.netmonster.core.util.Threads
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 /**
  * Represents method that is invoked when new data are available.
@@ -42,6 +40,11 @@ internal fun <T> TelephonyManager.requestSingleUpdate(
     val asyncLock = CountDownLatch(1)
     var listener: PhoneStateListener? = null
     var result: T? = null
+
+    if (simState == TelephonyManager.SIM_STATE_ABSENT) {
+        // When SIM is missing then all calls will timeout, so there's no need to even try
+        return null
+    }
 
     Threads.phoneStateListener.post {
         // We'll receive callbacks on thread that created instance of [listener] by default.

@@ -1,6 +1,7 @@
 package cz.mroczis.netmonster.core.model.cell
 
 import android.os.Build
+import cz.mroczis.netmonster.core.Milliseconds
 import cz.mroczis.netmonster.core.model.Network
 import cz.mroczis.netmonster.core.model.annotation.SinceSdk
 import cz.mroczis.netmonster.core.model.band.BandNr
@@ -38,18 +39,25 @@ data class CellNr(
     override val band: BandNr?,
     override val signal: SignalNr,
     override val connectionStatus: IConnection,
-    override val subscriptionId: Int
+    override val subscriptionId: Int,
+    override val timestamp: Milliseconds?,
 ) : ICell {
 
     override fun <T> let(processor: ICellProcessor<T>): T = processor.processNr(this)
 
     companion object {
 
-        const val CID_MIN = 0L
+        /**
+         * Correct min CID value is 0. Some Samsung phones use it as N/A value.
+         */
+        const val CID_MIN = 1L
         const val CID_MAX = 68_719_476_735L
 
 
-        const val TAC_MIN = 0L
+        /**
+         * Correct min TAC value is 0. Some Samsung phones use it as N/A value.
+         */
+        const val TAC_MIN = 1L
         const val TAC_MAX = 16_777_215L
 
         const val PCI_MIN = 0L

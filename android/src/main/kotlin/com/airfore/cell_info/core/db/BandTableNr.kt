@@ -36,11 +36,11 @@ object BandTableNr {
         BandEntity(295_000..303_600, "1500", 74),
         BandEntity(361_000..376_000, "1800", 3),
         BandEntity(376_000..384_000, "1900", 39),
-        BandEntity(386_000..398_000, "PCS", 2),
+        BandEntity(386_000..398_000, "1900", 2),
         BandEntity(386_000..399_000, "1900", 25),
-        BandEntity(399_000..404_000, "AWS", 70),
+        BandEntity(399_000..404_000, "2000", 70),
         BandEntity(402_000..405_000, "2000", 34),
-        BandEntity(422_000..440_000, "AWS", 66),
+        BandEntity(422_000..440_000, "2100", 66),
         BandEntity(422_000..434_000, "2100", 1),
         BandEntity(422_000..440_000, "2100", 65),
         BandEntity(460_000..480_000, "2300", 40),
@@ -56,8 +56,10 @@ object BandTableNr {
         BandEntity(693_334..733_333, "4500", 79)
     )
 
-    internal fun get(arfcn: Int): IBandEntity? {
-        val candidates = bands.filter { it.channelRange.contains(arfcn) }
+    internal fun get(arfcn: Int, bandHints: IntArray = intArrayOf()): IBandEntity? {
+        val candidates = bands
+            .filter { it.channelRange.contains(arfcn) }
+            .filter { bandHints.isEmpty() || (it.number != null && bandHints.contains(it.number)) }
 
         when {
             candidates.isEmpty() -> return null
@@ -77,7 +79,18 @@ object BandTableNr {
                 }
 
                 return if (filtered.isEmpty()) {
-                    null
+                    val uniqueName = candidates.distinctBy { it.name }
+                    if (uniqueName.size == 1) {
+                        // Safest bounds when it comes to bands - take min from start max from end
+                        val min = candidates.minOf { it.channelRange.first }
+                        val max = candidates.maxOf { it.channelRange.last }
+                        uniqueName[0].copy(
+                            channelRange = min..max,
+                            number = null
+                        )
+                    } else {
+                        null
+                    }
                 } else if (filtered.size == 1) {
                     filtered[0]
                 } else {
@@ -112,8 +125,8 @@ object BandTableNr {
      * Attempts to find current band information depending on [arfcn].
      * If no such band is found then result [BandNr] will contain only [BandNr.downlinkArfcn].
      */
-    fun map(arfcn: Int): BandNr {
-        val raw = get(arfcn)
+    fun map(arfcn: Int, bandHints: IntArray = intArrayOf()): BandNr {
+        val raw = get(arfcn, bandHints)
         return BandNr(
             downlinkArfcn = arfcn,
             downlinkFrequency = getFrequency(arfcn),

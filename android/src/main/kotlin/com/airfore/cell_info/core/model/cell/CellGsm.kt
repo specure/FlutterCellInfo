@@ -2,6 +2,7 @@ package cz.mroczis.netmonster.core.model.cell
 
 import android.os.Build
 import androidx.annotation.IntRange
+import cz.mroczis.netmonster.core.Milliseconds
 import cz.mroczis.netmonster.core.model.Network
 import cz.mroczis.netmonster.core.model.annotation.SinceSdk
 import cz.mroczis.netmonster.core.model.band.BandGsm
@@ -42,7 +43,8 @@ data class CellGsm(
 
     override val signal: SignalGsm,
     override val connectionStatus: IConnection,
-    override val subscriptionId: Int
+    override val subscriptionId: Int,
+    override val timestamp: Milliseconds?,
 ) : ICell {
 
     /**
@@ -62,7 +64,7 @@ data class CellGsm(
     /**
      * 15-decimal digit code that contains MCC-MNC-LAC-CID
      */
-        val cgi: String?
+    val cgi: String?
         get() = if (network != null) {
             "${network.toPlmn()}${lac.toString().padStart(5, '0')}${cid.toString().padStart(5, '0')}"
         } else null

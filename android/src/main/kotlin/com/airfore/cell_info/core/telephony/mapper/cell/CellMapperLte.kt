@@ -23,7 +23,7 @@ import kotlin.math.absoluteValue
  * [CellIdentityLte] -> [CellLte]
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal: SignalLte): CellLte? {
+internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal: SignalLte, timestamp: Long?): CellLte? {
     val network = mapNetwork()
     val ci = ci.inRangeOrNull(CellLte.CID_RANGE)
     val tac = tac.inRangeOrNull(CellLte.TAC_RANGE)
@@ -33,13 +33,25 @@ internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal
         earfcn.inRangeOrNull(BandLte.DOWNLINK_EARFCN_RANGE)
     } else null
 
-    val bandwidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        bandwidth.inRangeOrNull(CellLte.BANDWIDTH_RANGE)
-    } else null
-
     val band = if (earfcn != null) {
         BandTableLte.map(earfcn)
     } else null
+
+    val suggestedBands = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        bands.filter { it in BandTableLte.BAND_NUMBER_RANGE }
+    } else {
+        emptyList()
+    }
+
+    val bandwidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        bandwidth.inRangeOrNull(CellLte.BANDWIDTH_RANGE).takeIf {
+            // Sync issue, devices sometimes report invalid combos
+            // Example: EARFCN=473, Bands=[20], BW=10_000
+            // Real values: EARFCN=473, Bands=[1], BW=20_000
+            band?.number == null || suggestedBands.isEmpty() || suggestedBands.contains(band.number)
+        }
+    } else null
+
 
     return CellLte(
         network = network,
@@ -50,7 +62,8 @@ internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal
         connectionStatus = connection,
         signal = signal,
         band = band,
-        subscriptionId = subId
+        subscriptionId = subId,
+        timestamp = timestamp
     )
 }
 
@@ -221,7 +234,7 @@ internal fun GsmCellLocation.mapLte(subId: Int, signalStrength: SignalStrength?,
             rsrq = rsrq,
             cqi = cqi,
             snr = snr,
-            timingAdvance = null
+            timingAdvance = null,
         )
     }
 
@@ -235,7 +248,8 @@ internal fun GsmCellLocation.mapLte(subId: Int, signalStrength: SignalStrength?,
             bandwidth = null,
             signal = signal,
             connectionStatus = PrimaryConnection(),
-            subscriptionId = subId
+            subscriptionId = subId,
+            timestamp = null,
         )
     } else null
 }

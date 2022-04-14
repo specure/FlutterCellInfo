@@ -109,7 +109,8 @@ fun getWcdmaFake(
             ecio = 0, ecno = 0, rscp = -100
 
         ),
-        subscriptionId = 0
+        subscriptionId = 0,
+        timestamp = System.currentTimeMillis()
     )
 ): CellWCDMA {
 
