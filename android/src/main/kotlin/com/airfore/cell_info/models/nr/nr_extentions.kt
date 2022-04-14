@@ -41,7 +41,7 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
     }
 
     cellNR.network =
-            Network()
+        Network()
     cell.network?.let {
         cellNR.network.iso = it.iso
         cellData.iso = it.iso
@@ -55,29 +55,32 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
 
     cellNR.signalNR = SignalNR()
     cell.signal.let {
-        cellNR.signalNR.csiRsrp = cell.signal.csiRsrp!!
-        cellData.csiRsrp = cell.signal.csiRsrp!!
+        cellNR.signalNR.csiRsrp = cell.signal.csiRsrp?:0
+        cellData.csiRsrp = cell.signal.csiRsrp?:0
 
-        cellNR.signalNR.csiRsrpAsu = cell.signal.csiRsrpAsu!!
-        cellData.csiRsrpAsu = cell.signal.csiRsrpAsu!!
+        cellNR.signalNR.csiRsrpAsu = cell.signal.csiRsrpAsu?:0
+        cellData.csiRsrpAsu = cell.signal.csiRsrpAsu?:0
 
-        cellNR.signalNR.csiRsrq = cell.signal.csiRsrq!!
-        cellData.csiRsrq = cell.signal.csiRsrq!!
+        cellNR.signalNR.csiRsrq = cell.signal.csiRsrq?:0
+        cellData.csiRsrq = cell.signal.csiRsrq?:0
 
-        cellNR.signalNR.csiSinr = cell.signal.csiSinr!!
-        cellData.csiSinr = cell.signal.csiSinr!!
+        cellNR.signalNR.csiSinr = cell.signal.csiSinr?:0
+        cellData.csiSinr = cell.signal.csiSinr?:0
 
-        cellNR.signalNR.ssRsrq = cell.signal.ssRsrp!!
-        cellData.ssRsrq = cell.signal.ssRsrp!!
+        cellNR.signalNR.ssRsrq = cell.signal.ssRsrq?:0
+        cellData.ssRsrq = cell.signal.ssRsrq?:0
 
-        cellNR.signalNR.dbm = cell.signal.dbm!!
-        cellData.dbm = cell.signal.dbm!!
+        cellNR.signalNR.ssSinr = cell.signal.ssSinr?:0
+        cellData.ssSinr = cell.signal.ssSinr?:0
 
-        cellNR.signalNR.ssRsrp = cell.signal.ssRsrp
-        cellData.ssRsrp = cell.signal.ssRsrp
+        cellNR.signalNR.ssRsrp = cell.signal.ssRsrp?:0
+        cellData.ssRsrp = cell.signal.ssRsrp?:0
 
-        cellNR.signalNR.ssRsrpAsu = cell.signal.ssRsrpAsu!!
-        cellData.ssRsrpAsu = cell.signal.ssRsrpAsu!!
+        cellNR.signalNR.ssRsrpAsu = cell.signal.ssRsrpAsu?:0
+        cellData.ssRsrpAsu = cell.signal.ssRsrpAsu?:0
+
+        cellNR.signalNR.dbm = cell.signal.dbm?:0
+        cellData.dbm = cell.signal.dbm?:0
 
     }
 
@@ -107,7 +110,7 @@ fun getNrFake(cell: CellNr? = null): CellNR {
     cellNR.bandNR.name = "it.name!!"
 
     cellNR.network =
-            Network()
+        Network()
     cellNR.network.iso = "0"
     cellNR.network.mcc = "0"
     cellNR.network.mnc = "0"
