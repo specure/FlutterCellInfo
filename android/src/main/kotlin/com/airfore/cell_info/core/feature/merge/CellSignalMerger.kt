@@ -69,13 +69,13 @@ internal class CellSignalMerger {
         tac = tac ?: other.tac,
         pci = pci ?: other.pci,
         band = band ?: other.band,
-        signal = signal.copy(
-            csiRsrp = signal.csiRsrp minOr other.signal.csiRsrp,
-            csiRsrq = signal.csiRsrq minOr other.signal.csiRsrq,
-            csiSinr = signal.csiSinr minOr other.signal.csiSinr,
-            ssRsrp = signal.ssRsrp minOr other.signal.ssRsrp,
-            ssRsrq = signal.ssRsrq minOr other.signal.ssRsrq,
-            ssSinr = signal.ssSinr minOr other.signal.ssSinr
+        signal = signal?.copy(
+            csiRsrp = signal.csiRsrp minOr other.signal?.csiRsrp,
+            csiRsrq = signal.csiRsrq minOr other.signal?.csiRsrq,
+            csiSinr = signal.csiSinr minOr other.signal?.csiSinr,
+            ssRsrp = signal.ssRsrp minOr other.signal?.ssRsrp,
+            ssRsrq = signal.ssRsrq minOr other.signal?.ssRsrq,
+            ssSinr = signal.ssSinr minOr other.signal?.ssSinr
         )
     )
 

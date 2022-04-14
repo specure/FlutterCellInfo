@@ -37,7 +37,7 @@ data class CellNr(
     val pci: Int?,
 
     override val band: BandNr?,
-    override val signal: SignalNr,
+    override val signal: SignalNr?,
     override val connectionStatus: IConnection,
     override val subscriptionId: Int,
     override val timestamp: Milliseconds?,

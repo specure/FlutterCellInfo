@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,7 +44,7 @@ class NetMonster {
                 when (cell) {
 
                     is CellNr -> {
-                        Log.d(TAG, "requestData: NR")
+                        Log.d(TAG, "requestData: NR $cell and $cellData")
 
                         val cellType = CellType()
                         cellType.nr = getNr(cell, cellData)
@@ -181,21 +182,25 @@ class NetMonster {
     fun simsInfo(context: Context, result: io.flutter.plugin.common.MethodChannel.Result? = null): ArrayList<SIMInfo> {
 
         val simInfoLists = ArrayList<SIMInfo>()
-        val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-        val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-        for (subscriptionInfo in activeSubscriptionInfoList) {
-            val carrierName = subscriptionInfo.carrierName
-            val displayName = subscriptionInfo.displayName
-            val mcc = subscriptionInfo.mcc
-            val mnc = subscriptionInfo.mnc
-            val subscriptionInfoNumber = subscriptionInfo.number
-            Log.d(TAG, "carrierName: ${carrierName}")
-            simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber))
-        }
+        try {
+            val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+            val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+            for (subscriptionInfo in activeSubscriptionInfoList) {
+                val carrierName = subscriptionInfo.carrierName
+                val displayName = subscriptionInfo.displayName
+                val mcc = subscriptionInfo.mcc
+                val mnc = subscriptionInfo.mnc
+                val subscriptionInfoNumber = subscriptionInfo.number
+                Log.d(TAG, "carrierName: ${carrierName}")
+                simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber))
+            }
 
-        val json = Gson().toJson(SIMInfoResponse(simInfoLists))
-        Log.d(TAG, "simsInfo: ${json}")
-        result?.success(json)
+            val json = Gson().toJson(SIMInfoResponse(simInfoLists))
+            Log.d(TAG, "simsInfo: ${json}")
+            result?.success(json)
+        } catch (e: Exception) {
+            Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
+        }
         return simInfoLists
     }
 }

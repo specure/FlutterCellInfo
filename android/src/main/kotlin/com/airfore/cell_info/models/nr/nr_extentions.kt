@@ -5,25 +5,25 @@ import com.airfore.cell_info.models.common.Network
 import cz.mroczis.netmonster.core.model.cell.CellNr
 
 fun getNr(cell: CellNr, cellData: CellData): CellNR {
-
+    val cellNewRadio = cell.copy()
     val cellNR = CellNR()
     cellNR.type = "NR"
     cellData.type = "NR"
 
-    cellNR.nci = cell.nci
-    cellData.nci = cell.nci
+    cellNR.nci = cellNewRadio.nci
+    cellData.nci = cellNewRadio.nci
 
-    cellNR.pci = cell.pci
-    cellData.pci = cell.pci
+    cellNR.pci = cellNewRadio.pci
+    cellData.pci = cellNewRadio.pci
 
-    cellNR.tac = cell.tac
-    cellData.tac = cell.tac
+    cellNR.tac = cellNewRadio.tac
+    cellData.tac = cellNewRadio.tac
 
-    cellNR.connectionStatus = cell.connectionStatus.toString()
-    cellData.connectionStatus = cell.connectionStatus.toString()
+    cellNR.connectionStatus = cellNewRadio.connectionStatus.toString()
+    cellData.connectionStatus = cellNewRadio.connectionStatus.toString()
 
     cellNR.bandNR = BandNR()
-    cell.band?.let {
+    cellNewRadio.band?.let {
         cellNR.bandNR.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
 
@@ -42,7 +42,7 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
 
     cellNR.network =
         Network()
-    cell.network?.let {
+    cellNewRadio.network?.let {
         cellNR.network.iso = it.iso
         cellData.iso = it.iso
 
@@ -54,39 +54,37 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
     }
 
     cellNR.signalNR = SignalNR()
-    cell.signal.let {
-        cellNR.signalNR.csiRsrp = cell.signal.csiRsrp ?: 0
-        cellData.csiRsrp = cell.signal.csiRsrp ?: 0
+    cellNewRadio.signal?.let {
+        cellNR.signalNR.csiRsrp = it.csiRsrp ?: 0
+        cellData.csiRsrp = it.csiRsrp ?: 0
 
-        cellNR.signalNR.csiRsrpAsu = cell.signal.csiRsrpAsu ?: 0
-        cellData.csiRsrpAsu = cell.signal.csiRsrpAsu ?: 0
+        cellNR.signalNR.csiRsrpAsu = it.csiRsrpAsu ?: 0
+        cellData.csiRsrpAsu = it.csiRsrpAsu ?: 0
 
-        cellNR.signalNR.csiRsrq = cell.signal.csiRsrq ?: 0
-        cellData.csiRsrq = cell.signal.csiRsrq ?: 0
+        cellNR.signalNR.csiRsrq = it.csiRsrq ?: 0
+        cellData.csiRsrq = it.csiRsrq ?: 0
 
-        cellNR.signalNR.csiSinr = cell.signal.csiSinr ?: 0
-        cellData.csiSinr = cell.signal.csiSinr ?: 0
+        cellNR.signalNR.csiSinr = it.csiSinr ?: 0
+        cellData.csiSinr = it.csiSinr ?: 0
 
-        cellNR.signalNR.ssRsrq = cell.signal.ssRsrq ?: 0
-        cellData.ssRsrq = cell.signal.ssRsrq ?: 0
+        cellNR.signalNR.ssRsrq = it.ssRsrq ?: 0
+        cellData.ssRsrq = it.ssRsrq ?: 0
 
-        cellNR.signalNR.ssSinr = cell.signal.ssSinr ?: 0
-        cellData.ssSinr = cell.signal.ssSinr ?: 0
+        cellNR.signalNR.ssSinr = it.ssSinr ?: 0
+        cellData.ssSinr = it.ssSinr ?: 0
 
-        cellNR.signalNR.ssRsrp = cell.signal.ssRsrp ?: 0
-        cellData.ssRsrp = cell.signal.ssRsrp ?: 0
+        cellNR.signalNR.ssRsrp = it.ssRsrp ?: 0
+        cellData.ssRsrp = it.ssRsrp ?: 0
 
-        cellNR.signalNR.ssRsrpAsu = cell.signal.ssRsrpAsu ?: 0
-        cellData.ssRsrpAsu = cell.signal.ssRsrpAsu ?: 0
+        cellNR.signalNR.ssRsrpAsu = it.ssRsrpAsu ?: 0
+        cellData.ssRsrpAsu = it.ssRsrpAsu ?: 0
 
-        cellNR.signalNR.dbm = cell.signal.dbm ?: 0
-        cellData.dbm = cell.signal.dbm ?: 0
-
+        cellNR.signalNR.dbm = it.dbm ?: 0
+        cellData.dbm = it.dbm ?: 0
     }
 
-
-    cellNR.subscriptionId = cell.subscriptionId
-    cellData.subscriptionId = cell.subscriptionId
+    cellNR.subscriptionId = cellNewRadio.subscriptionId
+    cellData.subscriptionId = cellNewRadio.subscriptionId
 
     return cellNR
 }
