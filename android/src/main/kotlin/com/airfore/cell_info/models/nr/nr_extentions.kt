@@ -55,32 +55,32 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
 
     cellNR.signalNR = SignalNR()
     cell.signal.let {
-        cellNR.signalNR.csiRsrp = cell.signal.csiRsrp?:0
-        cellData.csiRsrp = cell.signal.csiRsrp?:0
+        cellNR.signalNR.csiRsrp = cell.signal.csiRsrp ?: 0
+        cellData.csiRsrp = cell.signal.csiRsrp ?: 0
 
-        cellNR.signalNR.csiRsrpAsu = cell.signal.csiRsrpAsu?:0
-        cellData.csiRsrpAsu = cell.signal.csiRsrpAsu?:0
+        cellNR.signalNR.csiRsrpAsu = cell.signal.csiRsrpAsu ?: 0
+        cellData.csiRsrpAsu = cell.signal.csiRsrpAsu ?: 0
 
-        cellNR.signalNR.csiRsrq = cell.signal.csiRsrq?:0
-        cellData.csiRsrq = cell.signal.csiRsrq?:0
+        cellNR.signalNR.csiRsrq = cell.signal.csiRsrq ?: 0
+        cellData.csiRsrq = cell.signal.csiRsrq ?: 0
 
-        cellNR.signalNR.csiSinr = cell.signal.csiSinr?:0
-        cellData.csiSinr = cell.signal.csiSinr?:0
+        cellNR.signalNR.csiSinr = cell.signal.csiSinr ?: 0
+        cellData.csiSinr = cell.signal.csiSinr ?: 0
 
-        cellNR.signalNR.ssRsrq = cell.signal.ssRsrq?:0
-        cellData.ssRsrq = cell.signal.ssRsrq?:0
+        cellNR.signalNR.ssRsrq = cell.signal.ssRsrq ?: 0
+        cellData.ssRsrq = cell.signal.ssRsrq ?: 0
 
-        cellNR.signalNR.ssSinr = cell.signal.ssSinr?:0
-        cellData.ssSinr = cell.signal.ssSinr?:0
+        cellNR.signalNR.ssSinr = cell.signal.ssSinr ?: 0
+        cellData.ssSinr = cell.signal.ssSinr ?: 0
 
-        cellNR.signalNR.ssRsrp = cell.signal.ssRsrp?:0
-        cellData.ssRsrp = cell.signal.ssRsrp?:0
+        cellNR.signalNR.ssRsrp = cell.signal.ssRsrp ?: 0
+        cellData.ssRsrp = cell.signal.ssRsrp ?: 0
 
-        cellNR.signalNR.ssRsrpAsu = cell.signal.ssRsrpAsu?:0
-        cellData.ssRsrpAsu = cell.signal.ssRsrpAsu?:0
+        cellNR.signalNR.ssRsrpAsu = cell.signal.ssRsrpAsu ?: 0
+        cellData.ssRsrpAsu = cell.signal.ssRsrpAsu ?: 0
 
-        cellNR.signalNR.dbm = cell.signal.dbm?:0
-        cellData.dbm = cell.signal.dbm?:0
+        cellNR.signalNR.dbm = cell.signal.dbm ?: 0
+        cellData.dbm = cell.signal.dbm ?: 0
 
     }
 
