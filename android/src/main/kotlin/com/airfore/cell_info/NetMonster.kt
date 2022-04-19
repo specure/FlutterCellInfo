@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.telephony.SubscriptionManager
+import android.telephony.SubscriptionManager.INVALID_SUBSCRIPTION_ID
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.airfore.cell_info.models.*
@@ -185,14 +186,25 @@ class NetMonster {
         try {
             val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
             val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+            val defaultDataSubscriptionId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                SubscriptionManager.getDefaultDataSubscriptionId()
+            } else {
+                INVALID_SUBSCRIPTION_ID
+            }
             for (subscriptionInfo in activeSubscriptionInfoList) {
                 val carrierName = subscriptionInfo.carrierName
                 val displayName = subscriptionInfo.displayName
                 val mcc = subscriptionInfo.mcc
                 val mnc = subscriptionInfo.mnc
                 val subscriptionInfoNumber = subscriptionInfo.number
+                val subscriptionId = subscriptionInfo.subscriptionId
+                val isDefaultDataSubscription = subscriptionId == defaultDataSubscriptionId // notice, that this work from android N
                 Log.d(TAG, "carrierName: ${carrierName}")
-                simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber, subscriptionId, isDefaultDataSubscription))
+                } else {
+                    simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber, subscriptionId))
+                }
             }
 
             val json = Gson().toJson(SIMInfoResponse(simInfoLists))
