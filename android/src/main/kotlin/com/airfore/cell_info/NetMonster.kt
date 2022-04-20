@@ -15,6 +15,7 @@ import com.airfore.cell_info.models.nr.getNr
 import com.airfore.cell_info.models.tdscdma.getTdscdma
 import com.airfore.cell_info.models.wcdma.getWcdma
 import com.google.gson.Gson
+import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
@@ -38,6 +39,12 @@ class NetMonster {
     ): CellsResponse {
         NetMonsterFactory.get(context).apply {
             val merged = getCells()
+            val distinctSubscriptionIds = merged.distinctBy { it.subscriptionId }
+            val networkTypes = mutableMapOf<Int, NetworkType>()
+            distinctSubscriptionIds.forEach {
+                networkTypes[it.subscriptionId] = getNetworkType(it.subscriptionId)
+                Log.d("NetworkTypeDetected", "subscription ${it.subscriptionId} with network type ${networkTypes[it.subscriptionId]}")
+            }
             merged.forEach { cell ->
                 val cellData = CellData()
                 cellData.timestamp = System.currentTimeMillis()
@@ -52,7 +59,7 @@ class NetMonster {
                         cellType.type = "NR"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -72,7 +79,7 @@ class NetMonster {
                         cellType.type = "LTE"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -91,7 +98,7 @@ class NetMonster {
                         cellType.type = "WCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -111,7 +118,7 @@ class NetMonster {
                         cellType.type = "WCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -132,7 +139,7 @@ class NetMonster {
                         cellType.type = "GSM"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -150,7 +157,7 @@ class NetMonster {
                         cellType.type = "TDSCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = getNetworkType(cell.subscriptionId).technology.toString()
+                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
