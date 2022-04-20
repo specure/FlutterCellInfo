@@ -4,6 +4,7 @@ import android.util.Log
 import com.airfore.cell_info.models.CellData
 import com.airfore.cell_info.models.common.Network
 import cz.mroczis.netmonster.core.model.cell.CellNr
+import java.lang.Exception
 
 fun getNr(cell: CellNr, cellData: CellData): CellNR {
     val cellNewRadio = cell.copy()
@@ -57,33 +58,37 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
     cellNR.signalNR = SignalNR()
     val signalNR = cellNewRadio.signal
     signalNR?.let {
-        Log.d("signalNR:", "$signalNR")
-        cellNR.signalNR.csiRsrp = it.csiRsrp ?: 0
-        cellData.csiRsrp = it.csiRsrp ?: 0
+        try {
+            Log.d("signalNR:", "$signalNR")
+            cellNR.signalNR.csiRsrp = it.csiRsrp ?: 0
+            cellData.csiRsrp = it.csiRsrp ?: 0
 
-        cellNR.signalNR.csiRsrpAsu = it.csiRsrpAsu ?: 0
-        cellData.csiRsrpAsu = it.csiRsrpAsu ?: 0
+            cellNR.signalNR.csiRsrpAsu = it.csiRsrpAsu ?: 0
+            cellData.csiRsrpAsu = it.csiRsrpAsu ?: 0
 
-        cellNR.signalNR.csiRsrq = it.csiRsrq ?: 0
-        cellData.csiRsrq = it.csiRsrq ?: 0
+            cellNR.signalNR.csiRsrq = it.csiRsrq ?: 0
+            cellData.csiRsrq = it.csiRsrq ?: 0
 
-        cellNR.signalNR.csiSinr = it.csiSinr ?: 0
-        cellData.csiSinr = it.csiSinr ?: 0
+            cellNR.signalNR.csiSinr = it.csiSinr ?: 0
+            cellData.csiSinr = it.csiSinr ?: 0
 
-        cellNR.signalNR.ssRsrq = it.ssRsrq ?: 0
-        cellData.ssRsrq = it.ssRsrq ?: 0
+            cellNR.signalNR.ssRsrq = it.ssRsrq ?: 0
+            cellData.ssRsrq = it.ssRsrq ?: 0
 
-        cellNR.signalNR.ssSinr = it.ssSinr ?: 0
-        cellData.ssSinr = it.ssSinr ?: 0
+            cellNR.signalNR.ssSinr = it.ssSinr ?: 0
+            cellData.ssSinr = it.ssSinr ?: 0
 
-        cellNR.signalNR.ssRsrp = it.ssRsrp ?: 0
-        cellData.ssRsrp = it.ssRsrp ?: 0
+            cellNR.signalNR.ssRsrp = it.ssRsrp ?: 0
+            cellData.ssRsrp = it.ssRsrp ?: 0
 
-        cellNR.signalNR.ssRsrpAsu = it.ssRsrpAsu ?: 0
-        cellData.ssRsrpAsu = it.ssRsrpAsu ?: 0
+            cellNR.signalNR.ssRsrpAsu = it.ssRsrpAsu ?: 0
+            cellData.ssRsrpAsu = it.ssRsrpAsu ?: 0
 
-        cellNR.signalNR.dbm = it.dbm ?: 0
-        cellData.dbm = it.dbm ?: 0
+            cellNR.signalNR.dbm = it.dbm ?: 0
+            cellData.dbm = it.dbm ?: 0
+        } catch (e: Exception) {
+            e.localizedMessage?.let { ex -> Log.e("signalNR", ex) }
+        }
     }
 
     cellNR.subscriptionId = cellNewRadio.subscriptionId
