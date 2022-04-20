@@ -1,5 +1,6 @@
 package com.airfore.cell_info.models.nr
 
+import android.util.Log
 import com.airfore.cell_info.models.CellData
 import com.airfore.cell_info.models.common.Network
 import cz.mroczis.netmonster.core.model.cell.CellNr
@@ -54,7 +55,9 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
     }
 
     cellNR.signalNR = SignalNR()
-    cellNewRadio.signal?.let {
+    val signalNR = cellNewRadio.signal
+    signalNR?.let {
+        Log.d("signalNR:", "$signalNR")
         cellNR.signalNR.csiRsrp = it.csiRsrp ?: 0
         cellData.csiRsrp = it.csiRsrp ?: 0
 
