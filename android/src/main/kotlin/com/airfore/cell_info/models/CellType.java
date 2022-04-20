@@ -12,6 +12,7 @@ import java.io.Serializable;
 public class CellType implements Serializable {
 
     private String type;
+    private String networkType;
     private CellCDMA cdma;
     private CellGSM gsm;
     private CellLTE lte;
@@ -28,6 +29,14 @@ public class CellType implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String type) {
+        this.networkType = type;
     }
 
     public CellCDMA getCdma() {
