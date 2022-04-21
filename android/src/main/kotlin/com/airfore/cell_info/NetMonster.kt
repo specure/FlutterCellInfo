@@ -19,6 +19,7 @@ import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
+import cz.mroczis.netmonster.core.model.nr.NrNsaState
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -60,6 +61,13 @@ class NetMonster {
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
                                 cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                networkTypes[cell.subscriptionId]?.let {
+                                    if (it is NetworkType.Nr.Nsa) {
+                                        cellType.nrAvailable = it.nrNsaState.nrAvailable
+                                        cellType.enDcAvailable = it.nrNsaState.enDcAvailable
+                                        cellType.nrConnected = it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                    }
+                                }
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -80,6 +88,13 @@ class NetMonster {
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
                                 cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                networkTypes[cell.subscriptionId]?.let {
+                                    if (it is NetworkType.Nr.Nsa) {
+                                        cellType.nrAvailable = it.nrNsaState.nrAvailable
+                                        cellType.enDcAvailable = it.nrNsaState.enDcAvailable
+                                        cellType.nrConnected = it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                    }
+                                }
                                 primaryCellList.add(cellType)
                             }
                             else -> {

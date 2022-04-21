@@ -19,6 +19,9 @@ public class CellType implements Serializable {
     private CellNR nr;
     private CellTDSCDMA tdscdma;
     private CellWCDMA wcdma;
+    private Boolean nrAvailable;
+    private Boolean nrEnDcAvailable;
+    private Boolean nrConnected;
 
     public CellType() {
     }
@@ -29,6 +32,30 @@ public class CellType implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getEnDcAvailable() {
+        return nrEnDcAvailable;
+    }
+
+    public void setEnDcAvailable(Boolean enDcAvalable) {
+        this.nrEnDcAvailable = enDcAvalable;
+    }
+
+    public Boolean getNrAvailable() {
+        return nrAvailable;
+    }
+
+    public void setNrAvailable(Boolean nrAvailable) {
+        this.nrAvailable = nrAvailable;
+    }
+
+    public Boolean getNrConnected() {
+        return nrConnected;
+    }
+
+    public void setNrConnected(Boolean nrConnected) {
+        this.nrConnected = nrConnected;
     }
 
     public String getNetworkType() {
