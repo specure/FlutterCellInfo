@@ -7,6 +7,7 @@ import android.telephony.SubscriptionManager
 import android.telephony.SubscriptionManager.INVALID_SUBSCRIPTION_ID
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.airfore.cell_info.extensions.io
 import com.airfore.cell_info.models.*
 import com.airfore.cell_info.models.cdma.getCdma
 import com.airfore.cell_info.models.gsm.getGsm
@@ -20,13 +21,15 @@ import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.nr.NrNsaState
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 class NetMonster {
-
     private val TAG = "NetMonster"
 
     private val primaryCellList: MutableList<CellType> = ArrayList()
@@ -35,16 +38,19 @@ class NetMonster {
 
     @SuppressLint("MissingPermission")
     fun requestData(
-            context: Context,
-            result: io.flutter.plugin.common.MethodChannel.Result? = null
-    ): CellsResponse {
+        context: Context,
+        result: io.flutter.plugin.common.MethodChannel.Result? = null
+    ) = io {
         NetMonsterFactory.get(context).apply {
             val merged = getCells()
             val distinctSubscriptionIds = merged.distinctBy { it.subscriptionId }
             val networkTypes = mutableMapOf<Int, NetworkType>()
             distinctSubscriptionIds.forEach {
                 networkTypes[it.subscriptionId] = getNetworkType(it.subscriptionId)
-                Log.d("NetworkTypeDetected", "subscription ${it.subscriptionId} with network type ${networkTypes[it.subscriptionId]}")
+                Log.d(
+                    "NetworkTypeDetected",
+                    "subscription ${it.subscriptionId} with network type ${networkTypes[it.subscriptionId]}"
+                )
             }
             merged.forEach { cell ->
                 val cellData = CellData()
@@ -60,12 +66,14 @@ class NetMonster {
                         cellType.type = "NR"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 networkTypes[cell.subscriptionId]?.let {
                                     if (it is NetworkType.Nr.Nsa) {
                                         cellType.nrAvailable = it.nrNsaState.nrAvailable
                                         cellType.enDcAvailable = it.nrNsaState.enDcAvailable
-                                        cellType.nrConnected = it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                        cellType.nrConnected =
+                                            it.nrNsaState.connection is NrNsaState.Connection.Connected
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -87,12 +95,14 @@ class NetMonster {
                         cellType.type = "LTE"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 networkTypes[cell.subscriptionId]?.let {
                                     if (it is NetworkType.Nr.Nsa) {
                                         cellType.nrAvailable = it.nrNsaState.nrAvailable
                                         cellType.enDcAvailable = it.nrNsaState.enDcAvailable
-                                        cellType.nrConnected = it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                        cellType.nrConnected =
+                                            it.nrNsaState.connection is NrNsaState.Connection.Connected
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -113,7 +123,8 @@ class NetMonster {
                         cellType.type = "WCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -133,7 +144,8 @@ class NetMonster {
                         cellType.type = "WCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -154,7 +166,8 @@ class NetMonster {
                         cellType.type = "GSM"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -172,7 +185,8 @@ class NetMonster {
                         cellType.type = "TDSCDMA"
                         when (cell.connectionStatus) {
                             is PrimaryConnection -> {
-                                cellType.networkType = networkTypes[cell.subscriptionId]?.technology.toString()
+                                cellType.networkType =
+                                    networkTypes[cell.subscriptionId]?.technology.toString()
                                 primaryCellList.add(cellType)
                             }
                             else -> {
@@ -204,45 +218,66 @@ class NetMonster {
 
         Log.d(TAG, "requestData: " + Gson().toJson(cellsResponse))
         result?.success(Gson().toJson(cellsResponse))
-        return cellsResponse
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    fun simsInfo(context: Context, result: io.flutter.plugin.common.MethodChannel.Result? = null): ArrayList<SIMInfo> {
+    fun simsInfo(context: Context, result: io.flutter.plugin.common.MethodChannel.Result? = null) =
+        io {
 
-        val simInfoLists = ArrayList<SIMInfo>()
-        try {
-            val subscriptionManager = context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-            val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
-            val defaultDataSubscriptionId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                SubscriptionManager.getDefaultDataSubscriptionId()
-            } else {
-                INVALID_SUBSCRIPTION_ID
-            }
-            for (subscriptionInfo in activeSubscriptionInfoList) {
-                val carrierName = subscriptionInfo.carrierName
-                val displayName = subscriptionInfo.displayName
-                val mcc = subscriptionInfo.mcc
-                val mnc = subscriptionInfo.mnc
-                val subscriptionInfoNumber = subscriptionInfo.number
-                val subscriptionId = subscriptionInfo.subscriptionId
-                val isDefaultDataSubscription = subscriptionId == defaultDataSubscriptionId // notice, that this work from android N
-                Log.d(TAG, "carrierName: ${carrierName}")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber, subscriptionId, isDefaultDataSubscription))
-                } else {
-                    simInfoLists.add(SIMInfo(carrierName.toString(), displayName.toString(), mcc, mnc, subscriptionInfoNumber, subscriptionId))
+            val simInfoLists = ArrayList<SIMInfo>()
+            try {
+                val subscriptionManager =
+                    context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
+                val defaultDataSubscriptionId =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        SubscriptionManager.getDefaultDataSubscriptionId()
+                    } else {
+                        INVALID_SUBSCRIPTION_ID
+                    }
+                for (subscriptionInfo in activeSubscriptionInfoList) {
+                    val carrierName = subscriptionInfo.carrierName
+                    val displayName = subscriptionInfo.displayName
+                    val mcc = subscriptionInfo.mcc
+                    val mnc = subscriptionInfo.mnc
+                    val subscriptionInfoNumber = subscriptionInfo.number
+                    val subscriptionId = subscriptionInfo.subscriptionId
+                    val isDefaultDataSubscription =
+                        subscriptionId == defaultDataSubscriptionId // notice, that this work from android N
+                    Log.d(TAG, "carrierName: ${carrierName}")
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        simInfoLists.add(
+                            SIMInfo(
+                                carrierName.toString(),
+                                displayName.toString(),
+                                mcc,
+                                mnc,
+                                subscriptionInfoNumber,
+                                subscriptionId,
+                                isDefaultDataSubscription
+                            )
+                        )
+                    } else {
+                        simInfoLists.add(
+                            SIMInfo(
+                                carrierName.toString(),
+                                displayName.toString(),
+                                mcc,
+                                mnc,
+                                subscriptionInfoNumber,
+                                subscriptionId
+                            )
+                        )
+                    }
                 }
-            }
 
-            val json = Gson().toJson(SIMInfoResponse(simInfoLists))
-            Log.d(TAG, "simsInfo: ${json}")
-            result?.success(json)
-        } catch (e: Exception) {
-            Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
+                val json = Gson().toJson(SIMInfoResponse(simInfoLists))
+                Log.d(TAG, "simsInfo: ${json}")
+                result?.success(json)
+            } catch (e: Exception) {
+                Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
+            }
         }
-        return simInfoLists
-    }
 }
 
 

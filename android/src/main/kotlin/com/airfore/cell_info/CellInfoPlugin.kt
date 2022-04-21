@@ -8,6 +8,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.CoroutineScope
 
 /** CellInfoPlugin */
 class CellInfoPlugin: FlutterPlugin, MethodCallHandler {
@@ -33,7 +34,7 @@ class CellInfoPlugin: FlutterPlugin, MethodCallHandler {
     if (call.method == "cell_info") {
 
       val net = NetMonster()
-      net.requestData(context!!,result)
+      net.requestData(context!!, result)
 
     } else if (call.method == "sim_info") {
 
