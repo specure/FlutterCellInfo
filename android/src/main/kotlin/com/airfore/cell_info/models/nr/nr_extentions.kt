@@ -29,8 +29,8 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
         cellNR.bandNR.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
 
-        cellNR.bandNR.number = it.number!!
-        cellData.bandNumber = it.number!!
+        cellNR.bandNR.number = it.number ?: 0
+        cellData.bandNumber = it.number ?: 0
 
         cellNR.bandNR.downlinkArfcn = it.downlinkArfcn
         cellData.bandDownlinkArfcn = it.downlinkArfcn
@@ -38,7 +38,7 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
         cellNR.bandNR.downlinkFrequency = it.downlinkFrequency
         cellData.bandDownlinkFrequency = it.downlinkFrequency
 
-        cellNR.bandNR.name = it.name!!
+        cellNR.bandNR.name = it.name ?: ""
         cellData.bandName = it.name
     }
 
