@@ -49,7 +49,7 @@ data class SignalWcdma(
      * Unit: dB
      */
     @SinceSdk(Build.VERSION_CODES.M)
-    @IntRange(from = ECNO_MIN, to = ECIO_MAX)
+    @IntRange(from = ECIO_MIN, to = ECIO_MAX)
     val ecio: Int?
 ) : ISignal {
 
@@ -104,6 +104,8 @@ data class SignalWcdma(
         internal val ECNO_RANGE = ECNO_MIN..ECNO_MAX
         internal val RSCP_RANGE = RSCP_MIN..RSCP_MAX
         internal val ECIO_RANGE = ECIO_MIN..ECIO_MAX
+
+        internal val EMPTY = SignalWcdma(null, null, null, null, null)
     }
 
 }

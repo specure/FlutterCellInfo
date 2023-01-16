@@ -67,7 +67,7 @@ class SignalStrengthPostprocessor(
 
         override fun processNr(cell: CellNr): ICell =
             if (candidate is CellNr && candidate.nci == cell.nci) {
-                cell.copy(signal = cell.signal?.merge(candidate.signal))
+                cell.copy(signal = cell.signal.merge(candidate.signal))
             } else {
                 cell
             }

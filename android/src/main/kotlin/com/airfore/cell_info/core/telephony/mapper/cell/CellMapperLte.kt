@@ -1,6 +1,5 @@
 package cz.mroczis.netmonster.core.telephony.mapper.cell
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.os.Build
 import android.telephony.CellIdentityLte
@@ -9,6 +8,7 @@ import android.telephony.SignalStrength
 import android.telephony.gsm.GsmCellLocation
 import cz.mroczis.netmonster.core.db.BandTableLte
 import cz.mroczis.netmonster.core.model.Network
+import cz.mroczis.netmonster.core.model.band.AggregatedBandLte
 import cz.mroczis.netmonster.core.model.band.BandLte
 import cz.mroczis.netmonster.core.model.cell.CellLte
 import cz.mroczis.netmonster.core.model.cell.ICell
@@ -17,14 +17,19 @@ import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.signal.SignalLte
 import cz.mroczis.netmonster.core.util.*
 import kotlin.math.abs
-import kotlin.math.absoluteValue
 
 /**
  * [CellIdentityLte] -> [CellLte]
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal: SignalLte, timestamp: Long?): CellLte? {
-    val network = mapNetwork()
+internal fun CellIdentityLte.mapCell(
+    subId: Int,
+    connection: IConnection,
+    signal: SignalLte,
+    timestamp: Long? = null,
+    plmn: Network? = null,
+): CellLte {
+    val network = plmn ?: mapNetwork()
     val ci = ci.inRangeOrNull(CellLte.CID_RANGE)
     val tac = tac.inRangeOrNull(CellLte.TAC_RANGE)
     val pci = pci.inRangeOrNull(CellLte.PCI_RANGE)
@@ -34,7 +39,7 @@ internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal
     } else null
 
     val band = if (earfcn != null) {
-        BandTableLte.map(earfcn)
+        BandTableLte.map(earfcn = earfcn, mcc = network?.mcc)
     } else null
 
     val suggestedBands = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -42,6 +47,15 @@ internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal
     } else {
         emptyList()
     }
+
+    val aggregatedBands = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && band?.number != null) {
+        val bands = bands
+        if (bands.size > 1 && bands.contains(band.number)) {
+            (bands.toList() - band.number)
+                .mapNotNull { BandTableLte.getByNumber(it) }
+                .map { AggregatedBandLte(it.number, it.name) }
+        } else emptyList()
+    } else emptyList()
 
     val bandwidth = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         bandwidth.inRangeOrNull(CellLte.BANDWIDTH_RANGE).takeIf {
@@ -63,7 +77,8 @@ internal fun CellIdentityLte.mapCell(subId: Int, connection: IConnection, signal
         signal = signal,
         band = band,
         subscriptionId = subId,
-        timestamp = timestamp
+        timestamp = timestamp,
+        aggregatedBands = aggregatedBands
     )
 }
 
@@ -250,6 +265,7 @@ internal fun GsmCellLocation.mapLte(subId: Int, signalStrength: SignalStrength?,
             connectionStatus = PrimaryConnection(),
             subscriptionId = subId,
             timestamp = null,
+            aggregatedBands = emptyList(),
         )
     } else null
 }
