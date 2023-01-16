@@ -71,6 +71,7 @@ class NetMonster {
                                         cellType.enDcAvailable = it.nrNsaState.enDcAvailable
                                         cellType.nrConnected =
                                             it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                        cellType.nrConnectionStatus = getNrConnectionStatus(it.nrNsaState.connection)
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -100,6 +101,7 @@ class NetMonster {
                                         cellType.enDcAvailable = it.nrNsaState.enDcAvailable
                                         cellType.nrConnected =
                                             it.nrNsaState.connection is NrNsaState.Connection.Connected
+                                        cellType.nrConnectionStatus = getNrConnectionStatus(it.nrNsaState.connection)
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -281,6 +283,15 @@ class NetMonster {
                 Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
             }
         }
+
+    private fun getNrConnectionStatus(connection: NrNsaState.Connection): String {
+        return when (connection) {
+            is NrNsaState.Connection.Connected -> "connected"
+            is NrNsaState.Connection.Disconnected -> "disconnected"
+            is NrNsaState.Connection.Rejected -> "rejected"
+            else -> "disconnected"
+        }
+    }
 }
 
 
