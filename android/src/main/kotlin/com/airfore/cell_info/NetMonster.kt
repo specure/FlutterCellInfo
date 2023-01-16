@@ -21,9 +21,6 @@ import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.nr.NrNsaState
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -238,6 +235,8 @@ class NetMonster {
                 for (subscriptionInfo in activeSubscriptionInfoList) {
                     val carrierName = subscriptionInfo.carrierName
                     val displayName = subscriptionInfo.displayName
+                    val countryIso = subscriptionInfo.countryIso
+                    val roaming = subscriptionInfo.dataRoaming == SubscriptionManager.DATA_ROAMING_ENABLE
                     val mcc = subscriptionInfo.mcc
                     val mnc = subscriptionInfo.mnc
                     val subscriptionInfoNumber = subscriptionInfo.number
@@ -254,7 +253,9 @@ class NetMonster {
                                 mnc,
                                 subscriptionInfoNumber,
                                 subscriptionId,
-                                isDefaultDataSubscription
+                                isDefaultDataSubscription,
+                                countryIso,
+                                roaming
                             )
                         )
                     } else {
@@ -265,7 +266,9 @@ class NetMonster {
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
-                                subscriptionId
+                                subscriptionId,
+                                countryIso,
+                                roaming
                             )
                         )
                     }

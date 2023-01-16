@@ -14,6 +14,8 @@ public class SIMInfo implements Serializable {
     private int mnc;
     private String subscriptionInfoNumber;
     private int subscriptionId;
+    private String countryIso;
+    private boolean roaming = false;
 
     /**
      * True if this sim is used as primary one for data communication in multisim environment, false otherwise
@@ -21,17 +23,19 @@ public class SIMInfo implements Serializable {
      */
     private boolean isDefaultDataSubscription = false;
 
-    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId) {
+    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, String countryIso, boolean roaming) {
         this.carrierName = carrierName;
         this.displayName = displayName;
         this.mcc = mcc;
         this.mnc = mnc;
         this.subscriptionInfoNumber = subscriptionInfoNumber;
         this.subscriptionId = subscriptionId;
+        this.countryIso = countryIso;
+        this.roaming = roaming;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, boolean isDefaultDataSubscription) {
+    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, boolean isDefaultDataSubscription, String countryIso, boolean roaming) {
         this.carrierName = carrierName;
         this.displayName = displayName;
         this.mcc = mcc;
@@ -39,6 +43,8 @@ public class SIMInfo implements Serializable {
         this.subscriptionInfoNumber = subscriptionInfoNumber;
         this.subscriptionId = subscriptionId;
         this.isDefaultDataSubscription = isDefaultDataSubscription;
+        this.countryIso = countryIso;
+        this.roaming = roaming;
     }
 
     public SIMInfo() {
@@ -102,6 +108,22 @@ public class SIMInfo implements Serializable {
         this.isDefaultDataSubscription = isDefaultDataSubscription;
     }
 
+    public String getCountryIso() {
+        return countryIso;
+    }
+
+    public void setCountryIso(String countryIso) {
+        this.countryIso = countryIso;
+    }
+
+    public boolean getRoaming() {
+        return roaming;
+    }
+
+    public void setRoaming(boolean roaming) {
+        this.roaming = roaming;
+    }
+
     @Override
     public String toString() {
         String log = "SIMInfo{" +
@@ -110,7 +132,9 @@ public class SIMInfo implements Serializable {
                 ", mcc=" + mcc +
                 ", mnc=" + mnc +
                 ", subscriptionInfoNumber='" + subscriptionInfoNumber + '\'' +
-                ", subscriptionId='" + subscriptionId + '\'';
+                ", subscriptionId='" + subscriptionId + '\'' +
+                ", countryIso='" + countryIso + '\'' +
+                ", roaming='" + roaming + '\'' ;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             log = log + ", isDefaultDataSubscription='" + isDefaultDataSubscription + '\'';
