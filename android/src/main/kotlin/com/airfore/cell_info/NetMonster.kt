@@ -72,6 +72,7 @@ class NetMonster {
                                         cellType.nrConnected =
                                             it.nrNsaState.connection is NrNsaState.Connection.Connected
                                         cellType.nrConnectionStatus = getNrConnectionStatus(it.nrNsaState.connection)
+                                        cellType.nrRejectedReason = getNrRejectedReason(it.nrNsaState.connection)
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -102,6 +103,7 @@ class NetMonster {
                                         cellType.nrConnected =
                                             it.nrNsaState.connection is NrNsaState.Connection.Connected
                                         cellType.nrConnectionStatus = getNrConnectionStatus(it.nrNsaState.connection)
+                                        cellType.nrRejectedReason = getNrRejectedReason(it.nrNsaState.connection)
                                     }
                                 }
                                 primaryCellList.add(cellType)
@@ -290,6 +292,13 @@ class NetMonster {
             is NrNsaState.Connection.Disconnected -> "disconnected"
             is NrNsaState.Connection.Rejected -> "rejected"
             else -> "disconnected"
+        }
+    }
+
+    private fun getNrRejectedReason(connection: NrNsaState.Connection): String? {
+        return when (connection) {
+            is NrNsaState.Connection.Rejected -> connection.reason.toString()
+            else -> null
         }
     }
 }

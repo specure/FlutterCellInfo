@@ -23,6 +23,7 @@ public class CellType implements Serializable {
     private Boolean nrEnDcAvailable;
     private Boolean nrConnected;
     private String nrConnectionStatus;
+    private String nrRejectedReason;
 
     public CellType() {
     }
@@ -65,6 +66,14 @@ public class CellType implements Serializable {
 
     public void setNrConnectionStatus(String nrConnectionStatus) {
         this.nrConnectionStatus = nrConnectionStatus;
+    }
+
+    public String getNrRejectedReason() {
+        return nrRejectedReason;
+    }
+
+    public void setNrRejectedReason(String nrRejectedReason) {
+        this.nrRejectedReason = nrRejectedReason;
     }
 
     public String getNetworkType() {
