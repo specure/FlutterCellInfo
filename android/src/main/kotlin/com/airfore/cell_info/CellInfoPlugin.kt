@@ -1,7 +1,12 @@
 package com.airfore.cell_info
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -30,11 +35,12 @@ class CellInfoPlugin: FlutterPlugin, MethodCallHandler {
     simInfoChannel.setMethodCallHandler(this)
   }
 
+  @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    val permissionLocation: Int =
-      ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
-    val permissionReadPhoneState: Int =
-      ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE)
+    val permissionLocation =
+      ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    val permissionReadPhoneState =
+      ContextCompat.checkSelfPermission(context!!, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
 
     if (call.method == "cell_info") {
       if (permissionLocation && permissionReadPhoneState) {
