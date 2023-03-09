@@ -31,16 +31,27 @@ class CellInfoPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+    val permissionLocation: Int =
+      ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissionReadPhoneState: Int =
+      ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE)
+
     if (call.method == "cell_info") {
-
-      val net = NetMonster()
-      net.requestData(context!!, result)
-
+      if (permissionLocation && permissionReadPhoneState) {
+        val net = NetMonster()
+        net.requestData(context!!, result)
+      } else {
+        result.success(null);
+        return;
+      }
     } else if (call.method == "sim_info") {
-
-      val net = NetMonster()
-      net.simsInfo(context!!,result)
-
+      if (permissionLocation && permissionReadPhoneState) {
+        val net = NetMonster()
+        net.simsInfo(context!!, result)
+      } else {
+        result.success(null);
+        return;
+      }
     } else {
       result.notImplemented()
     }
