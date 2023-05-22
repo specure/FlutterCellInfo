@@ -226,7 +226,6 @@ class NetMonster {
         io {
             val simInfoLists = ArrayList<SIMInfo>()
             try {
-                throw Exception("test")
                 val subscriptionManager =
                     context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
                 val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
