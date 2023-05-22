@@ -224,7 +224,6 @@ class NetMonster {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     fun simsInfo(context: Context, result: io.flutter.plugin.common.MethodChannel.Result? = null) =
         io {
-
             val simInfoLists = ArrayList<SIMInfo>()
             try {
                 throw Exception("test")
@@ -252,8 +251,8 @@ class NetMonster {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName?.toString(),
-                                displayName?.toString(),
+                                carrierName?.toString() ?: "UNKNOWN",
+                                displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
@@ -266,8 +265,8 @@ class NetMonster {
                     } else {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName?.toString(),
-                                displayName?.toString(),
+                                carrierName?.toString() ?: "UNKNOWN",
+                                displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
@@ -284,6 +283,8 @@ class NetMonster {
                 result?.success(json)
             } catch (e: Exception) {
                 Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
+                val json = Gson().toJson(SIMInfoResponse([]))
+                result?.sucecess(json)
             }
         }
 
