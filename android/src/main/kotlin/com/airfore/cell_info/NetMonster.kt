@@ -227,6 +227,7 @@ class NetMonster {
 
             val simInfoLists = ArrayList<SIMInfo>()
             try {
+                throw Exception("test")
                 val subscriptionManager =
                     context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
                 val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
@@ -251,8 +252,8 @@ class NetMonster {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString(),
-                                displayName.toString(),
+                                carrierName?.toString(),
+                                displayName?.toString(),
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
@@ -265,8 +266,8 @@ class NetMonster {
                     } else {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString(),
-                                displayName.toString(),
+                                carrierName?.toString(),
+                                displayName?.toString(),
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
