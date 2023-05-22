@@ -283,7 +283,7 @@ class NetMonster {
                 result?.success(json)
             } catch (e: Exception) {
                 Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
-                val json = Gson().toJson(SIMInfoResponse([]))
+                val json = Gson().toJson(SIMInfoResponse(mutableListOf<SIMInfo>()))
                 result?.sucecess(json)
             }
         }
