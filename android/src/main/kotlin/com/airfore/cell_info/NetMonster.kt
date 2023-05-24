@@ -228,7 +228,6 @@ class NetMonster {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     fun simsInfo(context: Context, result: io.flutter.plugin.common.MethodChannel.Result? = null) =
         io {
-
             val simInfoLists = ArrayList<SIMInfo>()
             try {
                 throw Exception("very long error message")
@@ -256,7 +255,7 @@ class NetMonster {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString() ?: "UNKNOWN",
+                                carrierName?.toString() ?: "UNKNOWN",
                                 displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
@@ -270,7 +269,7 @@ class NetMonster {
                     } else {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString() ?: "UNKNOWN",
+                                carrierName?.toString() ?: "UNKNOWN",
                                 displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
