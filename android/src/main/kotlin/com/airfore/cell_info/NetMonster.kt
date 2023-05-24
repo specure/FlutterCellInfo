@@ -230,7 +230,6 @@ class NetMonster {
         io {
             val simInfoLists = ArrayList<SIMInfo>()
             try {
-                throw Exception("very long error message")
                 val subscriptionManager =
                     context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
                 val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
