@@ -55,7 +55,13 @@ class _MyAppState extends State<MyApp> {
 
       String simInfo = await CellInfo.getSIMInfo;
       final simJson = json.decode(simInfo);
-      print("desply name ${SIMInfoResponse.fromJson(simJson).simInfoList[0].displayName}");
+      if (simJson['error'] != null) {
+        print("there is an error: ${simJson['error']}");
+      } else {
+        print("display name ${SIMInfoResponse.fromJson(simJson).simInfoList[0].displayName}");
+      }
+
+
 
     } on PlatformException {
       _cellsResponse = null;

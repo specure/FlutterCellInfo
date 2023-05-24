@@ -16,11 +16,15 @@ import com.airfore.cell_info.models.nr.getNr
 import com.airfore.cell_info.models.tdscdma.getTdscdma
 import com.airfore.cell_info.models.wcdma.getWcdma
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import cz.mroczis.netmonster.core.db.model.NetworkType
 import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.nr.NrNsaState
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.ArrayList
@@ -227,6 +231,7 @@ class NetMonster {
 
             val simInfoLists = ArrayList<SIMInfo>()
             try {
+                throw Exception("very long error message")
                 val subscriptionManager =
                     context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
                 val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
@@ -251,8 +256,8 @@ class NetMonster {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString(),
-                                displayName.toString(),
+                                carrierName.toString() ?: "UNKNOWN",
+                                displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
@@ -265,8 +270,8 @@ class NetMonster {
                     } else {
                         simInfoLists.add(
                             SIMInfo(
-                                carrierName.toString(),
-                                displayName.toString(),
+                                carrierName.toString() ?: "UNKNOWN",
+                                displayName?.toString() ?: "UNKNOWN",
                                 mcc,
                                 mnc,
                                 subscriptionInfoNumber,
@@ -283,6 +288,15 @@ class NetMonster {
                 result?.success(json)
             } catch (e: Exception) {
                 Log.e("NetMonster", "Error getting sims info: ${e.localizedMessage}")
+                val simsInfoResponse = SIMInfoResponse(mutableListOf<SIMInfo>())
+                val jsonTree = Gson().toJsonTree(simsInfoResponse).asJsonObject
+                val stringWriter = StringWriter()
+                var printWriter: PrintWriter = PrintWriter(stringWriter)
+                e.printStackTrace(printWriter)
+                val stackTraceString = stringWriter.toString()
+                jsonTree.addProperty("error", stackTraceString)
+                val json = Gson().toJson(jsonTree)
+                result?.success(json)
             }
         }
 
