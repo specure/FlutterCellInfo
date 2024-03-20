@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  CellsResponse _cellsResponse;
+  CellsResponse? _cellsResponse;
 
   @override
   void initState() {
@@ -31,38 +31,45 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    CellsResponse cellsResponse;
+    CellsResponse? cellsResponse;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      String platformVersion = await CellInfo.getCellInfo;
-      final body = json.decode(platformVersion);
+      String? platformVersion = await CellInfo.getCellInfo;
+      if (platformVersion != null) {
+        final body = json.decode(platformVersion);
 
-      cellsResponse = CellsResponse.fromJson(body);
+        cellsResponse = CellsResponse.fromJson(body);
 
-      CellType currentCellInFirstChip = cellsResponse.primaryCellList[0];
-      if (currentCellInFirstChip.type == "LT  E") {
-        currentDBM =
-            "LTE dbm = " + currentCellInFirstChip.lte.signalLTE.dbm.toString();
-      } else if (currentCellInFirstChip.type == "NR") {
-        currentDBM =
-            "NR dbm = " + currentCellInFirstChip.nr.signalNR.dbm.toString();
-      } else if (currentCellInFirstChip.type == "WCDMA") {
-        currentDBM = "WCDMA dbm = " +
-            currentCellInFirstChip.wcdma.signalWCDMA.dbm.toString();
+        CellType? currentCellInFirstChip = cellsResponse.primaryCellList?[0];
+        if (currentCellInFirstChip?.type == "LT  E") {
+          currentDBM =
+              "LTE dbm = " + (currentCellInFirstChip?.lte?.signalLTE?.dbm.toString() ?? "-");
+        } else if (currentCellInFirstChip?.type == "NR") {
+          currentDBM =
+              "NR dbm = " + (currentCellInFirstChip?.nr?.signalNR?.dbm.toString() ?? "-");
+        } else if (currentCellInFirstChip?.type == "WCDMA") {
+          currentDBM = "WCDMA dbm = " +
+              (currentCellInFirstChip?.wcdma?.signalWCDMA?.dbm?.toString() ?? "-");
 
-        print('currentDBM = ' + currentDBM);
-      }
+          print('currentDBM = ' + currentDBM);
+        }
 
-      String simInfo = await CellInfo.getSIMInfo;
-      final simJson = json.decode(simInfo);
-      if (simJson['error'] != null) {
-        print("there is an error: ${simJson['error']}");
+        String? simInfo = await CellInfo.getSIMInfo;
+
+        if (simInfo != null) {
+          final simJson = json.decode(simInfo);
+          if (simJson['error'] != null) {
+            print("there is an error: ${simJson['error']}");
+          } else {
+            print("display name ${SIMInfoResponse.fromJson(simJson).simInfoList?[0].displayName}");
+          }
+        } else {
+          print("Error while getting siminfo");
+        }
+
       } else {
-        print("display name ${SIMInfoResponse.fromJson(simJson).simInfoList[0].displayName}");
+        print("Error while getting cellinfo");
       }
-
-
-
     } on PlatformException {
       _cellsResponse = null;
     }
@@ -87,7 +94,7 @@ class _MyAppState extends State<MyApp> {
         body: _cellsResponse != null
             ? Center(
                 child: Text(
-                    'mahmoud = ${currentDBM}\n primary = ${_cellsResponse.primaryCellList.length.toString()} \n neighbor = ${_cellsResponse.neighboringCellList.length}'),
+                    'mahmoud = ${currentDBM}\n primary = ${_cellsResponse?.primaryCellList?.length.toString()} \n neighbor = ${_cellsResponse?.neighboringCellList?.length}'),
               )
             : null,
       ),
