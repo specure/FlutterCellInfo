@@ -38,28 +38,36 @@ object BandTableNr {
         BandEntity(376_000..384_000, "1900", 39),
         BandEntity(386_000..398_000, "1900", 2),
         BandEntity(386_000..399_000, "1900", 25),
-        BandEntity(399_000..404_000, "2000", 70),
+        BandEntity(399_000..404_000, "AWS", 70),
         BandEntity(402_000..405_000, "2000", 34),
-        BandEntity(422_000..440_000, "2100", 66),
+        BandEntity(422_000..440_000, "AWS", 66),
         BandEntity(422_000..434_000, "2100", 1),
         BandEntity(422_000..440_000, "2100", 65),
         BandEntity(460_000..480_000, "2300", 40),
         BandEntity(470_000..472_000, "2300", 30),
         BandEntity(496_700..499_000, "2500", 53),
-        BandEntity(499_200..537_999, "2600", 41),
-        BandEntity(499_200..538_000, "2600", 90),
+        BandEntity(499_200..537_999, "2500", 41),
+        BandEntity(499_200..538_000, "2500", 90),
         BandEntity(514_000..524_000, "2600", 38),
         BandEntity(524_000..538_000, "2600", 7),
         BandEntity(620_000..680_000, "3700", 77),
         BandEntity(620_000..653_333, "3500", 78),
         BandEntity(636_667..646_666, "3600", 48),
-        BandEntity(693_334..733_333, "4500", 79)
+        BandEntity(693_334..733_333, "4500", 79),
+        BandEntity(743_334..795_000, "5200", 46),
+        BandEntity(790_334..795_000, "5900", 47),
     )
 
-    internal fun get(arfcn: Int, bandHints: IntArray = intArrayOf()): IBandEntity? {
-        val candidates = bands
+    /**
+     * Lists all bands that do fit [arfcn] and are among [bandHints] (if not empty)
+     */
+    internal fun getAll(arfcn: Int, bandHints: IntArray = intArrayOf()) : List<BandEntity> =
+        bands
             .filter { it.channelRange.contains(arfcn) }
             .filter { bandHints.isEmpty() || (it.number != null && bandHints.contains(it.number)) }
+
+    internal fun get(arfcn: Int, bandHints: IntArray = intArrayOf()): IBandEntity? {
+        val candidates = getAll(arfcn = arfcn, bandHints = bandHints)
 
         when {
             candidates.isEmpty() -> return null
@@ -72,7 +80,7 @@ object BandTableNr {
                     // Note that not all bands do support 5 MHz BW but it's the smallest possible value
                     // Also we assume that there are no gaps non-5 MHz between blocks and 1st assigned one's
                     // arfcn is the lowest possible for given band
-                    val startFrequency = getFrequency(candidate.channelRange.last)
+                    val startFrequency = getFrequency(candidate.channelRange.first)
                     val frequency = getFrequency(arfcn)
 
                     (startFrequency - frequency).rem(SMALLEST_BANDWIDTH) == 0
@@ -122,18 +130,24 @@ object BandTableNr {
     }
 
     /**
-     * Attempts to find current band information depending on [arfcn].
-     * If no such band is found then result [BandNr] will contain only [BandNr.downlinkArfcn].
+     * Attempts to find *ALL* bands that do fit ARFCN + bandHints
      */
-    fun map(arfcn: Int, bandHints: IntArray = intArrayOf()): BandNr {
-        val raw = get(arfcn, bandHints)
-        return BandNr(
-            downlinkArfcn = arfcn,
-            downlinkFrequency = getFrequency(arfcn),
-            number = raw?.number,
-            name = raw?.name
-        )
-    }
+    fun mapAll(arfcn: Int, bandHints: IntArray = intArrayOf()) : List<BandNr> =
+        getAll(arfcn = arfcn, bandHints).map { it.toBandNr(arfcn = arfcn) }
+
+    /**
+     * Attempts to find current band information depending on [arfcn].
+     * If no such band is found or there are multiple candidates then result [BandNr] will contain only [BandNr.downlinkArfcn].
+     */
+    fun map(arfcn: Int, bandHints: IntArray = intArrayOf()): BandNr =
+        get(arfcn, bandHints).toBandNr(arfcn = arfcn)
+
+    private fun IBandEntity?.toBandNr(arfcn: Int) = BandNr(
+        downlinkArfcn = arfcn,
+        downlinkFrequency = getFrequency(arfcn),
+        number = this?.number,
+        name = this?.name
+    )
 
 }
 

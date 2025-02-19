@@ -1,6 +1,8 @@
 package cz.mroczis.netmonster.core.feature.postprocess
 
+import cz.mroczis.netmonster.core.SubscriptionId
 import cz.mroczis.netmonster.core.db.BandTableGsm
+import cz.mroczis.netmonster.core.db.BandTableLte
 import cz.mroczis.netmonster.core.model.Network
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.IConnection
@@ -123,14 +125,20 @@ class PlmnPostprocessor : ICellPostprocessor {
         }
 
         override fun processLte(cell: CellLte) =
-            findByChannel(NetworkGeneration.LTE, cell.subscriptionId, cell.band?.channelNumber)?.let {
-                cell.copy(network = it)
+            findByChannel(
+                gen = NetworkGeneration.LTE,
+                subscriptionId = cell.subscriptionId,
+                channel = cell.band?.channelNumber,
+                // Fixes channel number for select carriers
+                onInterceptChannel = { candidate, channel -> BandTableLte.getFixedEarfcn(channel, candidate.network.mcc) }
+            )?.let {
+                cell.copy(network = it, band = cell.band?.channelNumber?.let { earfcn -> BandTableLte.map(earfcn, it.mcc) })
             } ?: getFirstPlmnIfOnly(cell) { cell.copy(network = it) }
 
         override fun processNr(cell: CellNr) =
             findByChannel(NetworkGeneration.NR, cell.subscriptionId, cell.band?.channelNumber)?.let {
                 cell.copy(network = it)
-            } ?: getFirstPlmnIfOnly(cell) { cell.copy(network = it) }
+            } ?: getFirstPlmnIfOnly(cell, allowSubscriptionOverride = NetworkGeneration.LTE) { cell.copy(network = it) }
 
         override fun processTdscdma(cell: CellTdscdma) =
             findByChannel(NetworkGeneration.TDSCDMA, cell.subscriptionId, cell.band?.channelNumber)?.let {
@@ -142,23 +150,54 @@ class PlmnPostprocessor : ICellPostprocessor {
                 cell.copy(network = it)
             } ?: getFirstPlmnIfOnly(cell) { cell.copy(network = it) }
 
-        private fun findByChannel(gen: NetworkGeneration, subscriptionId: Int, channel: Int?): Network? =
+        /**
+         * Searches for a PLMN using primarily network generation (2G, 3G, ...)
+         * If there are multiple candidates for given network generation (e.g. Dual SIM, both connected to 4G) then channel number
+         * is used to find correct PLMN.
+         *
+         * Some adjustments of [channel] might be needed if it's bound to [PlmnNetwork]. For example some devices
+         * report incorrect EARFCN and it needs to be fixed
+         */
+        private fun findByChannel(
+            gen: NetworkGeneration,
+            subscriptionId: SubscriptionId,
+            channel: Int?,
+            // Default impl = keep channel that was passed assuming it's correct
+            onInterceptChannel: (PlmnNetwork, Int) -> Int? = { _, channel -> channel },
+        ): Network? =
             dictionary[gen]?.let { plmns ->
                 val subscriptionPlmns = plmns.filter { it.subscriptionId == subscriptionId }
                 if (subscriptionPlmns.size == 1) {
                     subscriptionPlmns[0].network
+                } else if (channel != null) {
+                    subscriptionPlmns.find { it.channelNumber == onInterceptChannel(it, channel) }?.network
                 } else {
-                    subscriptionPlmns.find { it.channelNumber == channel }?.network
+                    null
                 }
             }
 
         /**
          * Takes 1st PLMN if it's the only one in [dictionary].
+         * If there are multiple matching entries and there's unique combination "subscription id + network generation" then PLMN of serving cell is returned
+         * (common case is that in NR NSA PLMN of LTE cell gets assigned to a NSA cell)
          */
-        private fun getFirstPlmnIfOnly(cell: ICell, callback: (Network) -> ICell): ICell =
+        private fun getFirstPlmnIfOnly(
+            cell: ICell,
+            allowSubscriptionOverride: NetworkGeneration? = null,
+            callback: (Network) -> ICell
+        ): ICell =
             if (dictionary.size == 1 && dictionary.values.first().size == 1) {
                 callback.invoke(dictionary.values.first()[0].network)
-            } else cell
+            } else if (allowSubscriptionOverride != null && dictionary[allowSubscriptionOverride] != null) {
+                val subEntries = dictionary[allowSubscriptionOverride]!!.filter { it.subscriptionId == cell.subscriptionId }
+                if (subEntries.size == 1) {
+                    callback.invoke(subEntries[0].network)
+                } else {
+                    cell
+                }
+            } else {
+                cell
+            }
     }
 
     /**

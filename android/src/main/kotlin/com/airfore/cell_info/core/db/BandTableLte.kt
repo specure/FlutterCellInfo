@@ -55,8 +55,10 @@ object BandTableLte {
         BandEntity(39_650..41_589, "2500", 41),
         BandEntity(41_590..43_589, "3500", 42),
         BandEntity(43_590..45_589, "3700", 43),
-        BandEntity(45_590..46_589, "700", 45),
-        BandEntity(46_590..46_789, "1500", 44),
+        BandEntity(45_590..46_589, "700", 44),
+        BandEntity(46_590..46_789, "1500", 45),
+        BandEntity(46_790..54_539, "5200", 46),
+        BandEntity(54_540..55_239, "5900", 47),
         BandEntity(55_240..56_739, "3600", 48),
         BandEntity(56_740..58_239, "3600", 49),
         BandEntity(58_240..59_089, "1500", 50),
@@ -79,7 +81,8 @@ object BandTableLte {
         BandEntity(70_316..70_365, "1500", 76),
         BandEntity(70_366..70_545, "700", 85),
         BandEntity(70_546..70_595, "410", 87),
-        BandEntity(70_596..70_645, "410", 88)
+        BandEntity(70_596..70_645, "410", 88),
+        BandEntity(70_646..70_655, "700", 103),
     )
 
     /**
@@ -92,18 +95,22 @@ object BandTableLte {
      */
     private val integerOverflowFix = mapOf(
         "228" to listOf(1_950..1_999, 3_930..4_779), // Switzerland, b67 (non-overlapping part with b3) + b75
-        "302" to listOf(900..1_799, 3_050..3_399), // Canada, b66 + b71
+        "302" to listOf(1_200..1_799), // Canada, b66 (non-overlapping part with b2)
         "310" to listOf(1_200..1_799, 3_050..3_399), // USA, b66 (non-overlapping part with b2) + b71
+        "311" to listOf(1_200..1_799, 3_050..3_399), // USA, b66 (non-overlapping part with b2) + b71
         "466" to listOf(900..1_199), // Taiwan, b66 (non-overlapping part with b3)
         "730" to listOf(900..1_799), // Chile, b66
     )
 
-    internal fun get(earfcn: Int, mcc: String? = null): IBandEntity? =
+    internal fun getFixedEarfcn(earfcn: Int, mcc: String?) =
         if (mcc != null && integerOverflowFix[mcc]?.any { range -> earfcn in range } == true) {
-            bands.firstOrNull { it.channelRange.contains(earfcn + 65536) }
+            earfcn + 65536
         } else {
-            bands.firstOrNull { it.channelRange.contains(earfcn) }
+            earfcn
         }
+
+    internal fun get(earfcn: Int): IBandEntity? =
+        bands.firstOrNull { it.channelRange.contains(earfcn) }
 
     internal fun getByNumber(number: Int): IBandEntity? =
         bands.firstOrNull { it.number == number }
@@ -114,9 +121,10 @@ object BandTableLte {
      * If no such band is found then result [BandLte] will contain only [BandLte.downlinkEarfcn].
      */
     fun map(earfcn: Int, mcc: String? = null): BandLte {
-        val raw = get(earfcn, mcc)
+        val fixedEarfcn = getFixedEarfcn(earfcn, mcc)
+        val raw = get(fixedEarfcn)
         return BandLte(
-            downlinkEarfcn = earfcn,
+            downlinkEarfcn = fixedEarfcn,
             number = raw?.number,
             name = raw?.name
         )

@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.telephony.CellIdentityNr
 import android.telephony.CellSignalStrengthNr
+import cz.mroczis.netmonster.core.SubscriptionId
 import cz.mroczis.netmonster.core.db.BandTableNr
 import cz.mroczis.netmonster.core.model.Network
 import cz.mroczis.netmonster.core.model.band.BandNr
@@ -19,7 +20,7 @@ import cz.mroczis.netmonster.core.util.inRangeOrNull
  */
 @TargetApi(Build.VERSION_CODES.Q)
 internal fun CellIdentityNr.mapCell(
-    subId: Int,
+    subId: SubscriptionId,
     connection: IConnection,
     signal: SignalNr?,
     timestamp: Long? = null,
@@ -52,7 +53,7 @@ internal fun CellIdentityNr.mapCell(
         } else {
             connection
         },
-        signal = signal ?: SignalNr (),
+        signal = signal ?: SignalNr(),
         band = band,
         subscriptionId = subId,
         timestamp = timestamp
@@ -68,6 +69,9 @@ internal fun CellSignalStrengthNr.mapSignal(): SignalNr {
     val csiRsrp = csiRsrp.inRangeOrNull(SignalNr.RSRP_RANGE) ?: (csiRsrp * -1).inRangeOrNull(SignalNr.RSRP_RANGE)
     val csiRsrq = csiRsrq.inRangeOrNull(SignalNr.RSRQ_RANGE) ?: (csiRsrq * -1).inRangeOrNull(SignalNr.RSRQ_RANGE)
     val csiSinr = csiSinr.inRangeOrNull(SignalNr.SINR_RANGE)
+    val timingAdvance = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        timingAdvanceMicros.inRangeOrNull(SignalNr.TA_RANGE)
+    } else null
 
     return SignalNr(
         ssRsrp = ssRsrp,
@@ -75,6 +79,7 @@ internal fun CellSignalStrengthNr.mapSignal(): SignalNr {
         ssSinr = ssSinr,
         csiRsrp = csiRsrp,
         csiRsrq = csiRsrq,
-        csiSinr = csiSinr
+        csiSinr = csiSinr,
+        timingAdvance = timingAdvance,
     )
 }

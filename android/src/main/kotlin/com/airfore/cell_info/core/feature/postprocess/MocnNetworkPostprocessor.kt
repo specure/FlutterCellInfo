@@ -5,6 +5,7 @@ import android.annotation.TargetApi
 import android.os.Build
 import android.telephony.*
 import androidx.annotation.RequiresPermission
+import cz.mroczis.netmonster.core.SubscriptionId
 import cz.mroczis.netmonster.core.model.Network
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
@@ -28,8 +29,8 @@ import cz.mroczis.netmonster.core.subscription.ISubscriptionManagerCompat
  */
 class MocnNetworkPostprocessor(
     private val subscription: ISubscriptionManagerCompat,
-    private val networkOperatorGetter: (subId: Int) -> Network?,
-    private val serviceStateGetter: (subId: Int) -> ServiceState?,
+    private val networkOperatorGetter: (subId: SubscriptionId) -> Network?,
+    private val serviceStateGetter: (subId: SubscriptionId) -> ServiceState?,
 ) : ICellPostprocessor {
 
     @RequiresPermission(allOf = [Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_COARSE_LOCATION])
@@ -140,8 +141,10 @@ class MocnNetworkPostprocessor(
                 } else {
                     null
                 }
-            } else {
+            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                 networkOperator
+            } else {
+                null
             }
 
     }
