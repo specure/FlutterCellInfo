@@ -22,6 +22,9 @@ import cz.mroczis.netmonster.core.factory.NetMonsterFactory
 import cz.mroczis.netmonster.core.model.cell.*
 import cz.mroczis.netmonster.core.model.connection.PrimaryConnection
 import cz.mroczis.netmonster.core.model.nr.NrNsaState
+import cz.mroczis.netmonster.core.feature.detect.DetectorAosp
+import cz.mroczis.netmonster.core.feature.detect.DetectorLteAdvancedNrServiceState
+import cz.mroczis.netmonster.core.db.NetworkTypeTable
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.Writer
@@ -47,7 +50,14 @@ class NetMonster {
             val distinctSubscriptionIds = merged.distinctBy { it.subscriptionId }
             val networkTypes = mutableMapOf<Int, NetworkType>()
             distinctSubscriptionIds.forEach {
-                networkTypes[it.subscriptionId] = getNetworkType(it.subscriptionId)
+                networkTypes[it.subscriptionId] = getNetworkType(
+                    it.subscriptionId,
+                    DetectorLteAdvancedNrServiceState(),
+                    // These detectors must be disabled until NM lib resolves problem with dual sim NR and LTE mixing
+                    // DetectorLteAdvancedPhysicalChannel(),
+                    // DetectorLteAdvancedCellInfo(),
+                    DetectorAosp() // best to keep last when all other strategies fail
+                ) ?: NetworkTypeTable.get(NetworkType.UNKNOWN)
                 Log.d(
                     "NetworkTypeDetected",
                     "subscription ${it.subscriptionId} with network type ${networkTypes[it.subscriptionId]}"
