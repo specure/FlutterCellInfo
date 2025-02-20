@@ -249,47 +249,50 @@ class NetMonster {
                     } else {
                         INVALID_SUBSCRIPTION_ID
                     }
-                for (subscriptionInfo in activeSubscriptionInfoList) {
-                    val carrierName = subscriptionInfo.carrierName
-                    val displayName = subscriptionInfo.displayName
-                    val countryIso = subscriptionInfo.countryIso
-                    val roaming = subscriptionInfo.dataRoaming == SubscriptionManager.DATA_ROAMING_ENABLE
-                    val mcc = subscriptionInfo.mcc
-                    val mnc = subscriptionInfo.mnc
-                    val subscriptionInfoNumber = subscriptionInfo.number
-                    val subscriptionId = subscriptionInfo.subscriptionId
-                    val isDefaultDataSubscription =
-                        subscriptionId == defaultDataSubscriptionId // notice, that this work from android N
-                    Log.d(TAG, "carrierName: ${carrierName}")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        simInfoLists.add(
-                            SIMInfo(
-                                carrierName?.toString() ?: "UNKNOWN",
-                                displayName?.toString() ?: "UNKNOWN",
-                                mcc,
-                                mnc,
-                                subscriptionInfoNumber,
-                                subscriptionId,
-                                isDefaultDataSubscription,
-                                countryIso,
-                                roaming
+                activeSubscriptionInfoList?.let {
+                    for (subscriptionInfo in it) {
+                        val carrierName = subscriptionInfo.carrierName
+                        val displayName = subscriptionInfo.displayName
+                        val countryIso = subscriptionInfo.countryIso
+                        val roaming = subscriptionInfo.dataRoaming == SubscriptionManager.DATA_ROAMING_ENABLE
+                        val mcc = subscriptionInfo.mcc
+                        val mnc = subscriptionInfo.mnc
+                        val subscriptionInfoNumber = subscriptionInfo.number
+                        val subscriptionId = subscriptionInfo.subscriptionId
+                        val isDefaultDataSubscription =
+                            subscriptionId == defaultDataSubscriptionId // notice, that this work from android N
+                        Log.d(TAG, "carrierName: ${carrierName}")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            simInfoLists.add(
+                                SIMInfo(
+                                    carrierName?.toString() ?: "UNKNOWN",
+                                    displayName?.toString() ?: "UNKNOWN",
+                                    mcc,
+                                    mnc,
+                                    subscriptionInfoNumber,
+                                    subscriptionId,
+                                    isDefaultDataSubscription,
+                                    countryIso,
+                                    roaming
+                                )
                             )
-                        )
-                    } else {
-                        simInfoLists.add(
-                            SIMInfo(
-                                carrierName?.toString() ?: "UNKNOWN",
-                                displayName?.toString() ?: "UNKNOWN",
-                                mcc,
-                                mnc,
-                                subscriptionInfoNumber,
-                                subscriptionId,
-                                countryIso,
-                                roaming
+                        } else {
+                            simInfoLists.add(
+                                SIMInfo(
+                                    carrierName?.toString() ?: "UNKNOWN",
+                                    displayName?.toString() ?: "UNKNOWN",
+                                    mcc,
+                                    mnc,
+                                    subscriptionInfoNumber,
+                                    subscriptionId,
+                                    countryIso,
+                                    roaming
+                                )
                             )
-                        )
+                        }
                     }
                 }
+
 
                 val json = Gson().toJson(SIMInfoResponse(simInfoLists))
                 Log.d(TAG, "simsInfo: ${json}")
