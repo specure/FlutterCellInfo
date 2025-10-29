@@ -23,15 +23,15 @@ val flutterVersionName: String = localProperties.getProperty("flutter.versionNam
 
 android {
     namespace = "com.airfore.cell_info_example"
-    compileSdk = 35
+    compileSdk = 36
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     sourceSets {
@@ -40,8 +40,8 @@ android {
 
     defaultConfig {
         applicationId = "com.airfore.cell_info_example"
-        minSdk = flutter.minSdkVersion //21 // Use a default value if flutter.minSdkVersion is not available
-        targetSdk = 35
+        minSdk = 24 //21 // Use a default value if flutter.minSdkVersion is not available
+        targetSdk = 36
         versionCode = flutterVersionCode.toInt()
         versionName = flutterVersionName
     }
