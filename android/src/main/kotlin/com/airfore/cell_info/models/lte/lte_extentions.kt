@@ -80,6 +80,10 @@ fun getLte(cell: CellLte, cellData: CellData): CellLTE {
             cellLTE.signalLTE.rsrp = it
             cellData.rsrp = it
         }
+        cell.signal.rsrq?.let {
+            cellLTE.signalLTE.rsrq = it
+            cellData.rsrq = it
+        }
     }
 
     cellLTE.eci = cell.eci
@@ -132,6 +136,7 @@ fun getLteFake(cell: CellLte? = null): CellLTE {
     cellLTE.signalLTE.dbm = 0
     cellLTE.signalLTE.rssi = 0
     cellLTE.signalLTE.rsrp = 0.0
+    cellLTE.signalLTE.rsrq = 0.0
 
 
     cellLTE.eci = 0
