@@ -3,6 +3,13 @@ import 'package:cell_info/models/wcdma/wcdma_band.dart';
 import 'package:cell_info/models/wcdma/wcdma_signal.dart';
 
 class Wcdma {
+  int? ci,
+  int? cid,
+  int? lac,
+  int? psc,
+  int? rnc,
+  String? cgi,
+  int? subscriptionId;
   BandWCDMA? bandWCDMA;
   SignalWCDMA? signalWCDMA;
   String? connectionStatus;
@@ -10,7 +17,15 @@ class Wcdma {
   String? type;
 
   Wcdma(
-      {this.bandWCDMA,
+      {
+        this.ci,
+        this.cid,
+        this.lac,
+        this.psc,
+        this.rnc,
+        this.cgi,
+        this.subscriptionId,
+        this.bandWCDMA,
         this.signalWCDMA,
         this.connectionStatus,
         this.network,
@@ -24,6 +39,13 @@ class Wcdma {
         ? new SignalWCDMA.fromJson(json['signalWCDMA'])
         : null;
     connectionStatus = json['connectionStatus'];
+    subscriptionId = json['subscriptionId'];
+    ci = json['ci'];
+    cid = json['cid'];
+    lac = json['lac'];
+    psc = json['psc'];
+    rnc = json['rnc'];
+    cgi = json['cgi'];
     network =
     json['network'] != null ? new Network.fromJson(json['network']) : null;
     type = json['type'];
@@ -38,6 +60,13 @@ class Wcdma {
       data['signalWCDMA'] = this.signalWCDMA!.toJson();
     }
     data['connectionStatus'] = this.connectionStatus;
+    data['subscriptionId'] = this.subscriptionId;
+    data['ci'] = this.ci;
+    data['cid'] = this.cid;
+    data['lac'] = this.lac;
+    data['psc'] = this.psc;
+    data['rnc'] = this.rnc;
+    data['cgi'] = this.cgi;
     if (this.network != null) {
       data['network'] = this.network!.toJson();
     }
