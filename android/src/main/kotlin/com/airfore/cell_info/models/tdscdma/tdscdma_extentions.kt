@@ -6,62 +6,80 @@ import cz.mroczis.netmonster.core.model.cell.CellTdscdma
 
 fun getTdscdma(cell: CellTdscdma, cellData: CellData): CellTDSCDMA {
 
-    val cellGSM = CellTDSCDMA()
-    cellGSM.type = "TDSCDMA"
+    val cellTDSCDMA = CellTDSCDMA()
+    cellTDSCDMA.type = "TDSCDMA"
     cellData.type = "TDSCDMA"
 
-    cellGSM.bandTDSCDMA = BandTDSCDMA()
-    cellGSM.connectionStatus = cell.connectionStatus.toString()
+    cellTDSCDMA.bandTDSCDMA = BandTDSCDMA()
+    cellTDSCDMA.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
-    cellGSM.bandTDSCDMA = BandTDSCDMA()
+    cellTDSCDMA.ci = cell.ci
+    cellData.ci = cell.ci
+
+    cellTDSCDMA.cid = cell.cid
+    cellData.cid = cell.cid
+
+    cellTDSCDMA.lac = cell.lac
+    cellData.lac = cell.lac
+
+    cellTDSCDMA.cpid = cell.cpid
+    cellData.cpid = cell.cpid
+
+    cellTDSCDMA.rnc = cell.rnc
+    cellData.rnc = cell.rnc
+
+    cellTDSCDMA.cgi = cell.cgi
+    cellData.cgi = cell.cgi
+
+    cellTDSCDMA.bandTDSCDMA = BandTDSCDMA()
     cell.band?.let {
-        cellGSM.bandTDSCDMA.channelNumber = it.channelNumber
+        cellTDSCDMA.bandTDSCDMA.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
 
-        cellGSM.bandTDSCDMA.number = it.number!!
+        cellTDSCDMA.bandTDSCDMA.number = it.number!!
         cellData.bandNumber = it.number
 
-        cellGSM.bandTDSCDMA.name = it.name!!
+        cellTDSCDMA.bandTDSCDMA.name = it.name!!
         cellData.bandName = it.name!!
 
-        cellGSM.bandTDSCDMA.downlinkUarfcn = it.downlinkUarfcn
+        cellTDSCDMA.bandTDSCDMA.downlinkUarfcn = it.downlinkUarfcn
         cellData.downlinkUarfcn = it.downlinkUarfcn
     }
 
-    cellGSM.network =
+    cellTDSCDMA.network =
             Network()
     cell.network?.let {
-        cellGSM.network.iso = it.iso
+        cellTDSCDMA.network.iso = it.iso
         cellData.iso = it.iso
-        cellGSM.network.mcc = it.mcc
+        cellTDSCDMA.network.mcc = it.mcc
         cellData.mcc = it.mcc
-        cellGSM.network.mnc = it.mnc
+        cellTDSCDMA.network.mnc = it.mnc
         cellData.mnc = it.mnc
     }
 
-    cellGSM.signalTDSCDMA = SignalTDSCDMA()
+    cellTDSCDMA.signalTDSCDMA = SignalTDSCDMA()
     cell.signal.let {
-        cellGSM.signalTDSCDMA.bitErrorRate = cell.signal.bitErrorRate!!
+        cellTDSCDMA.signalTDSCDMA.bitErrorRate = cell.signal.bitErrorRate!!
         cellData.bitErrorRate = cell.signal.bitErrorRate!!
-        cellGSM.signalTDSCDMA.rssi = cell.signal.rssi!!
+        cellTDSCDMA.signalTDSCDMA.rssi = cell.signal.rssi!!
         cellData.rssi = cell.signal.rssi!!
-        cellGSM.signalTDSCDMA.rscp = cell.signal.rscp!!
+        cellTDSCDMA.signalTDSCDMA.rscp = cell.signal.rscp!!
         cellData.rscp = cell.signal.rscp!!
-        cellGSM.signalTDSCDMA.rscpAsu = cell.signal.rscpAsu!!
+        cellTDSCDMA.signalTDSCDMA.rscpAsu = cell.signal.rscpAsu!!
         cellData.rscpAsu = cell.signal.rscpAsu!!
-        cellGSM.signalTDSCDMA.rssiAsu = cell.signal.rssiAsu!!
+        cellTDSCDMA.signalTDSCDMA.rssiAsu = cell.signal.rssiAsu!!
         cellData.rssiAsu = cell.signal.rssiAsu!!
-        cellGSM.signalTDSCDMA.dbm = cell.signal.dbm!!
+        cellTDSCDMA.signalTDSCDMA.dbm = cell.signal.dbm!!
         cellData.dbm = cell.signal.dbm!!
     }
 
 
-    cellGSM.subscriptionId = cell.subscriptionId
+    cellTDSCDMA.subscriptionId = cell.subscriptionId
     cellData.subscriptionId = cell.subscriptionId
 
 
-    return cellGSM
+    return cellTDSCDMA
 }
 
 fun getTdscdmaFake(cell: CellTdscdma? = null): CellTDSCDMA {

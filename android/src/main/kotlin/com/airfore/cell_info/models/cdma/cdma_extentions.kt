@@ -13,6 +13,19 @@ fun getCdma(cell: CellCdma,cellData: CellData): CellCDMA {
 
     cellCDMA.bid = cell.bid
     cellData.bid = cell.bid
+
+    cellCDMA.sid = cell.sid
+    cellData.sid = cell.sid
+
+    cellCDMA.nid = cell.nid
+    cellData.nid = cell.nid
+
+    cellCDMA.lat = cell.lat
+    cellData.lat = cell.lat
+
+    cellCDMA.lon = cell.lon
+    cellData.lon = cell.lon
+
     cellCDMA.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 

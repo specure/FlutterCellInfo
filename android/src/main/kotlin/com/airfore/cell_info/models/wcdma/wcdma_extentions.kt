@@ -9,81 +9,99 @@ import cz.mroczis.netmonster.core.model.signal.SignalWcdma
 
 fun getWcdma(cell: CellWcdma, cellData: CellData): CellWCDMA {
 
-    val cellGSM = CellWCDMA()
-    cellGSM.type = "WCDMA"
+    val cellWCDMA = CellWCDMA()
+    cellWCDMA.type = "WCDMA"
     cellData.type = "WCDMA"
 
-    cellGSM.bandWCDMA = BandWCDMA()
-    cellGSM.connectionStatus = cell.connectionStatus.toString()
+    cellWCDMA.bandWCDMA = BandWCDMA()
+    cellWCDMA.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
-    cellGSM.bandWCDMA = BandWCDMA()
+    cellWCDMA.ci = cell.ci
+    cellData.ci = cell.ci
+
+    cellWCDMA.cid = cell.cid
+    cellData.cid = cell.cid
+
+    cellWCDMA.lac = cell.lac
+    cellData.lac = cell.lac
+
+    cellWCDMA.psc = cell.psc
+    cellData.psc = cell.psc
+
+    cellWCDMA.rnc = cell.rnc
+    cellData.rnc = cell.rnc
+
+    cellWCDMA.cgi = cell.cgi
+    cellData.cgi = cell.cgi
+
+    cellWCDMA.bandWCDMA = BandWCDMA()
     cell.band?.let {
-        cellGSM.bandWCDMA.channelNumber = it.channelNumber
+        cellWCDMA.bandWCDMA.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
         it.number?.let {
-            cellGSM.bandWCDMA.number = it
+            cellWCDMA.bandWCDMA.number = it
             cellData.bandNumber = it
         }
         it.name?.let {
-            cellGSM.bandWCDMA.name = it
+            cellWCDMA.bandWCDMA.name = it
             cellData.bandName = it
         }
-        cellGSM.bandWCDMA.downlinkUarfcn = it.downlinkUarfcn
+        cellWCDMA.bandWCDMA.downlinkUarfcn = it.downlinkUarfcn
         cellData.downlinkUarfcn = it.downlinkUarfcn
     }
 
-    cellGSM.network =
+    cellWCDMA.network =
         Network()
     cell.network?.let {
-        cellGSM.network.iso = it.iso
+        cellWCDMA.network.iso = it.iso
         cellData.iso = it.iso
-        cellGSM.network.mcc = it.mcc
+        cellWCDMA.network.mcc = it.mcc
         cellData.mcc = it.mcc
-        cellGSM.network.mnc = it.mnc
+        cellWCDMA.network.mnc = it.mnc
         cellData.mnc = it.mnc
     }
 
-    cellGSM.signalWCDMA = SignalWCDMA()
+    cellWCDMA.signalWCDMA = SignalWCDMA()
     cell.signal.let {
         cell.signal.bitErrorRate?.let {
-            cellGSM.signalWCDMA.bitErrorRate = it
+            cellWCDMA.signalWCDMA.bitErrorRate = it
             cellData.bitErrorRate = it
         }
         cell.signal.rssi?.let {
-            cellGSM.signalWCDMA.rssi = it
+            cellWCDMA.signalWCDMA.rssi = it
             cellData.rssi = it
         }
         cell.signal.rscp?.let {
-            cellGSM.signalWCDMA.rscp = it
+            cellWCDMA.signalWCDMA.rscp = it
             cellData.rscp = it
         }
         cell.signal.rscpAsu?.let {
-            cellGSM.signalWCDMA.rscpAsu = it
+            cellWCDMA.signalWCDMA.rscpAsu = it
             cellData.rscpAsu = it
         }
         cell.signal.rssiAsu?.let {
-            cellGSM.signalWCDMA.rssiAsu = it
+            cellWCDMA.signalWCDMA.rssiAsu = it
             cellData.rssiAsu = it
         }
         cell.signal.ecno?.let {
-            cellGSM.signalWCDMA.ecno = it
+            cellWCDMA.signalWCDMA.ecno = it
             cellData.ecno = it
         }
         cell.signal.ecio?.let {
-            cellGSM.signalWCDMA.ecio = it
+            cellWCDMA.signalWCDMA.ecio = it
             cellData.ecio = it
         }
         cell.signal.dbm?.let {
-            cellGSM.signalWCDMA.dbm = it
+            cellWCDMA.signalWCDMA.dbm = it
             cellData.dbm = it
         }
     }
 
-    cellGSM.subscriptionId = cell.subscriptionId
+    cellWCDMA.subscriptionId = cell.subscriptionId
     cellData.subscriptionId = cell.subscriptionId
 
-    return cellGSM
+    return cellWCDMA
 }
 
 

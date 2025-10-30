@@ -3,12 +3,12 @@ import 'package:cell_info/models/wcdma/wcdma_band.dart';
 import 'package:cell_info/models/wcdma/wcdma_signal.dart';
 
 class Wcdma {
-  int? ci,
-  int? cid,
-  int? lac,
-  int? psc,
-  int? rnc,
-  String? cgi,
+  int? ci;
+  int? cid;
+  int? lac;
+  int? psc;
+  int? rnc;
+  String? cgi;
   int? subscriptionId;
   BandWCDMA? bandWCDMA;
   SignalWCDMA? signalWCDMA;

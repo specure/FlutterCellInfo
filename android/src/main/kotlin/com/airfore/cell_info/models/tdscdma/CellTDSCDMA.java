@@ -12,7 +12,7 @@ public class CellTDSCDMA extends Cell implements Serializable {
     private Integer cpid;
     private Integer cid;
     private Integer rnc;
-    private Integer cgi;
+    private String cgi;
     private BandTDSCDMA bandTDSCDMA;
     private SignalTDSCDMA signalTDSCDMA;
 
@@ -59,11 +59,11 @@ public class CellTDSCDMA extends Cell implements Serializable {
         this.rnc = rnc;
     }
 
-    public Integer getCgi() {
+    public String getCgi() {
         return cgi;
     }
 
-    public void setCgi(Integer cgi) {
+    public void setCgi(String cgi) {
         this.cgi = cgi;
     }
 

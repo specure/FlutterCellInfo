@@ -14,7 +14,7 @@ public class CellWCDMA extends Cell implements Serializable {
     private Integer psc;
     private Integer cid;
     private Integer rnc;
-    private Integer cgi;
+    private String cgi;
 
     private BandWCDMA bandWCDMA;
     private SignalWCDMA signalWCDMA;
@@ -62,11 +62,11 @@ public class CellWCDMA extends Cell implements Serializable {
         this.rnc = rnc;
     }
 
-    public Integer getCgi() {
+    public String getCgi() {
         return cgi;
     }
 
-    public void setCgi(Integer cgi) {
+    public void setCgi(String cgi) {
         this.cgi = cgi;
     }
 

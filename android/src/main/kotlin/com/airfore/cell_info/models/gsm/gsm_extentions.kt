@@ -14,6 +14,15 @@ fun getGsm(cell: CellGsm, cellData: CellData): CellGSM {
     cellGSM.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
+    cellGSM.cid = cell.cid
+    cellData.cid = cell.cid
+
+    cellGSM.lac = cell.lac
+    cellData.lac = cell.lac
+
+    cellGSM.bsic = cell.bsic
+    cellData.bsic = cell.bsic
+
     cellGSM.bandGSM = BandGSM()
     cell.band?.let {
         cellGSM.bandGSM.channelNumber = it.channelNumber

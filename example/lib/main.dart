@@ -55,7 +55,7 @@ class _MyAppState extends State<MyApp> {
 
         cellsResponse = CellsResponse.fromJson(body);
 
-        CellType? currentCellInFirstChip = cellsResponse.primaryCellList?[0];
+        CellType? currentCellInFirstChip = (cellsResponse.primaryCellList?.isNotEmpty == true) ?  cellsResponse.primaryCellList?.first : null;
         if (currentCellInFirstChip?.type == "LTE") {
           currentDBM =
               "LTE dbm = " + (currentCellInFirstChip?.lte?.signalLTE?.dbm.toString() ?? "-");
@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
             print("there is an error: ${simJson['error']}");
           } else {
             simsResponse = SIMInfoResponse.fromJson(simJson);
-            print("display name ${simsResponse.simInfoList?[0].displayName}");
+            print("display name ${simsResponse.simInfoList?.first.displayName}");
           }
         } else {
           print("Error while getting siminfo");

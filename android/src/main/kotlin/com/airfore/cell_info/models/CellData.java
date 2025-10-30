@@ -32,7 +32,7 @@ public class CellData implements Serializable {
     private Integer bsic;
     private Integer ncc;
     private Integer bcc;
-    private Integer cgi;
+    private String cgi;
     private int dbm;
     private int rssi;
     private int bitErrorRate;
@@ -292,11 +292,11 @@ public class CellData implements Serializable {
         this.bcc = bcc;
     }
 
-    public Integer getCgi() {
+    public String getCgi() {
         return cgi;
     }
 
-    public void setCgi(Integer cgi) {
+    public void setCgi(String cgi) {
         this.cgi = cgi;
     }
 

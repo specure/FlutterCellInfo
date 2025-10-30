@@ -16,7 +16,7 @@ class WcdmaMainCellInfoWidget extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text("SubId: ${cellInfo?.wcdma?.subscriptionId}, Type: ${cellInfo?.type} * ${cellInfo?.wcdma?.type} * ${cellInfo?.wcdma?.network?.mcc}-${cellInfo?.wcdma?.network?.mnc} * ${cellInfo?.wcdma?.bandWCDMA?.name} * ${cellInfo?.wcdma?.connectionStatus}"),
+        Text("SubId: ${cellInfo?.wcdma?.subscriptionId}, Type: ${cellInfo?.type} * ${cellInfo?.wcdma?.type} * ${cellInfo?.wcdma?.network?.mcc}-${cellInfo?.wcdma?.network?.mnc} * ${cellInfo?.wcdma?.bandWCDMA?.channelNumber} * ${cellInfo?.wcdma?.connectionStatus}"),
         Table (
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           columnWidths: const {
