@@ -3,7 +3,9 @@ package com.airfore.cell_info
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.telephony.TelephonyManager
 import android.telephony.SubscriptionManager
+import android.telephony.SubscriptionInfo
 import android.telephony.SubscriptionManager.INVALID_SUBSCRIPTION_ID
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -242,6 +244,7 @@ class NetMonster {
             try {
                 val subscriptionManager =
                     context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as android.telephony.TelephonyManager
                 val activeSubscriptionInfoList = subscriptionManager.activeSubscriptionInfoList
                 val defaultDataSubscriptionId =
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -249,12 +252,16 @@ class NetMonster {
                     } else {
                         INVALID_SUBSCRIPTION_ID
                     }
+
                 activeSubscriptionInfoList?.let {
                     for (subscriptionInfo in it) {
+                        val currentSimTelephonyManager = telephonyManager.createForSubscriptionId(subscriptionInfo.subscriptionId)
                         val carrierName = subscriptionInfo.carrierName
                         val displayName = subscriptionInfo.displayName
                         val countryIso = subscriptionInfo.countryIso
-                        val roaming = subscriptionInfo.dataRoaming == SubscriptionManager.DATA_ROAMING_ENABLE
+                        val networkCountry = currentSimTelephonyManager.networkCountryIso
+                        val roaming = currentSimTelephonyManager?.isNetworkRoaming ?: false
+//                        logTelephonyInfo(currentSimTelephonyManager, subscriptionInfo)
                         val mcc = subscriptionInfo.mcc
                         val mnc = subscriptionInfo.mnc
                         val subscriptionInfoNumber = subscriptionInfo.number
@@ -273,6 +280,7 @@ class NetMonster {
                                     subscriptionId,
                                     isDefaultDataSubscription,
                                     countryIso,
+                                    networkCountry,
                                     roaming
                                 )
                             )
@@ -286,6 +294,7 @@ class NetMonster {
                                     subscriptionInfoNumber,
                                     subscriptionId,
                                     countryIso,
+                                    networkCountry,
                                     roaming
                                 )
                             )
@@ -325,6 +334,31 @@ class NetMonster {
             is NrNsaState.Connection.Rejected -> connection.reason.toString()
             else -> null
         }
+    }
+
+    fun logTelephonyInfo(tmSub: TelephonyManager, sub: SubscriptionInfo) {
+        val simCountry = tmSub.simCountryIso
+        val simOperator = tmSub.simOperatorName
+        val networkCountry = tmSub.networkCountryIso
+        val networkOperator = tmSub.networkOperatorName
+        val isRoaming = tmSub.isNetworkRoaming
+        val phoneType = when (tmSub.phoneType) {
+            TelephonyManager.PHONE_TYPE_GSM -> "GSM"
+            TelephonyManager.PHONE_TYPE_CDMA -> "CDMA"
+            TelephonyManager.PHONE_TYPE_SIP -> "SIP"
+            TelephonyManager.PHONE_TYPE_NONE -> "NONE"
+            else -> "UNKNOWN"
+        }
+
+        Log.d("TelephonyInfo", "---- SIM ID: ${sub.subscriptionId} ----")
+        Log.d("TelephonyInfo", "SIM Country: $simCountry")
+        Log.d("TelephonyInfo", "SIM Operator: $simOperator")
+        Log.d("TelephonyInfo", "Network Country: $networkCountry")
+        Log.d("TelephonyInfo", "Network Operator: $networkOperator")
+        Log.d("TelephonyInfo", "Roaming: $isRoaming")
+        Log.d("TelephonyInfo", "Phone Type: $phoneType")
+        Log.d("TelephonyInfo", "MCC: ${tmSub.networkOperator?.substring(0,3) ?: "-"}")
+        Log.d("TelephonyInfo", "MNC: ${tmSub.networkOperator?.substring(3) ?: "-"}")
     }
 }
 

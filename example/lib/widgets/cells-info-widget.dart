@@ -1,15 +1,15 @@
 import 'package:cell_info/models/common/cell_type.dart';
-import 'package:cell_info_example/widgets/cell-cdma-widget.dart';
-import 'package:cell_info_example/widgets/cell-gsm-widget.dart';
-import 'package:cell_info_example/widgets/cell-lte-widget.dart';
-import 'package:cell_info_example/widgets/cell-nr-widget.dart';
-import 'package:cell_info_example/widgets/cell-tdscdma-widget.dart';
-import 'package:cell_info_example/widgets/cell-wcdma-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-cdma-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-gsm-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-lte-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-nr-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-tdscdma-widget.dart';
+import 'package:cell_info_example/widgets/cells/cell-wcdma-widget.dart';
 import 'package:flutter/material.dart';
 
-class CellInfoWidget extends StatelessWidget {
+class CellsInfoWidget extends StatelessWidget {
 
-  CellInfoWidget({
+  CellsInfoWidget({
     Key? key,
     this.cellInfos
   }) : super (key: key);

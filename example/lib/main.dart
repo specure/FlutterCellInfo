@@ -5,7 +5,8 @@ import 'package:cell_info/CellResponse.dart';
 import 'package:cell_info/SIMInfoResponse.dart';
 import 'package:cell_info/cell_info.dart';
 import 'package:cell_info/models/common/cell_type.dart';
-import 'package:cell_info_example/widgets/cell-info-widget.dart';
+import 'package:cell_info_example/widgets/cells-info-widget.dart';
+import 'package:cell_info_example/widgets/sims-info-widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -115,11 +116,15 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SimsInfoWidget(
+                sims: _simInfoResponse?.simInfoList,
+              ),
+              const SizedBox(height: 8),
               const Text(
                 "Primary cells:",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              CellInfoWidget(
+              CellsInfoWidget(
                 cellInfos: _cellsResponse?.primaryCellList,
               ),
               const SizedBox(height: 8), // optional small spacing
@@ -127,7 +132,7 @@ class _MyAppState extends State<MyApp> {
                 "Secondary cells:",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              CellInfoWidget(
+              CellsInfoWidget(
                 cellInfos: _cellsResponse?.neighboringCellList,
               ),
             ],

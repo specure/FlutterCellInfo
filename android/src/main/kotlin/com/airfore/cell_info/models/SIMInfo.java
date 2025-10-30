@@ -15,6 +15,7 @@ public class SIMInfo implements Serializable {
     private String subscriptionInfoNumber;
     private int subscriptionId;
     private String countryIso;
+    private String networkCountryIso;
     private boolean roaming = false;
 
     /**
@@ -23,7 +24,7 @@ public class SIMInfo implements Serializable {
      */
     private boolean isDefaultDataSubscription = false;
 
-    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, String countryIso, boolean roaming) {
+    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, String countryIso, String networkCountryIso, boolean roaming) {
         this.carrierName = carrierName;
         this.displayName = displayName;
         this.mcc = mcc;
@@ -31,11 +32,12 @@ public class SIMInfo implements Serializable {
         this.subscriptionInfoNumber = subscriptionInfoNumber;
         this.subscriptionId = subscriptionId;
         this.countryIso = countryIso;
+        this.networkCountryIso = networkCountryIso;
         this.roaming = roaming;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, boolean isDefaultDataSubscription, String countryIso, boolean roaming) {
+    public SIMInfo(String carrierName, String displayName, int mcc, int mnc, String subscriptionInfoNumber, int subscriptionId, boolean isDefaultDataSubscription, String countryIso, String networkCountryIso, boolean roaming) {
         this.carrierName = carrierName;
         this.displayName = displayName;
         this.mcc = mcc;
@@ -44,6 +46,7 @@ public class SIMInfo implements Serializable {
         this.subscriptionId = subscriptionId;
         this.isDefaultDataSubscription = isDefaultDataSubscription;
         this.countryIso = countryIso;
+        this.networkCountryIso = networkCountryIso;
         this.roaming = roaming;
     }
 
@@ -116,6 +119,14 @@ public class SIMInfo implements Serializable {
         this.countryIso = countryIso;
     }
 
+    public String getNetworkCountryIso() {
+        return networkCountryIso;
+    }
+
+    public void setNetworkCountryIso(String networkCountryIso) {
+        this.networkCountryIso = countryIso;
+    }
+
     public boolean getRoaming() {
         return roaming;
     }
@@ -134,6 +145,7 @@ public class SIMInfo implements Serializable {
                 ", subscriptionInfoNumber='" + subscriptionInfoNumber + '\'' +
                 ", subscriptionId='" + subscriptionId + '\'' +
                 ", countryIso='" + countryIso + '\'' +
+                ", networkCountryIso='" + networkCountryIso + '\'' +
                 ", roaming='" + roaming + '\'' ;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
