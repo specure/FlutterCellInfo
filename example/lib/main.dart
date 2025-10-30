@@ -5,6 +5,7 @@ import 'package:cell_info/CellResponse.dart';
 import 'package:cell_info/SIMInfoResponse.dart';
 import 'package:cell_info/cell_info.dart';
 import 'package:cell_info/models/common/cell_type.dart';
+import 'package:cell_info_example/widgets/cell-info-widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,11 +21,24 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   CellsResponse? _cellsResponse;
+  SIMInfoResponse? _simInfoResponse;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      initPlatformState();
+    });
+
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer when widget is disposed
+    super.dispose();
   }
 
   String currentDBM = "";
@@ -32,6 +46,7 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     CellsResponse? cellsResponse;
+    SIMInfoResponse? simsResponse;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       String? platformVersion = await CellInfo.getCellInfo;
@@ -41,7 +56,7 @@ class _MyAppState extends State<MyApp> {
         cellsResponse = CellsResponse.fromJson(body);
 
         CellType? currentCellInFirstChip = cellsResponse.primaryCellList?[0];
-        if (currentCellInFirstChip?.type == "LT  E") {
+        if (currentCellInFirstChip?.type == "LTE") {
           currentDBM =
               "LTE dbm = " + (currentCellInFirstChip?.lte?.signalLTE?.dbm.toString() ?? "-");
         } else if (currentCellInFirstChip?.type == "NR") {
@@ -61,7 +76,8 @@ class _MyAppState extends State<MyApp> {
           if (simJson['error'] != null) {
             print("there is an error: ${simJson['error']}");
           } else {
-            print("display name ${SIMInfoResponse.fromJson(simJson).simInfoList?[0].displayName}");
+            simsResponse = SIMInfoResponse.fromJson(simJson);
+            print("display name ${simsResponse.simInfoList?[0].displayName}");
           }
         } else {
           print("Error while getting siminfo");
@@ -72,6 +88,7 @@ class _MyAppState extends State<MyApp> {
       }
     } on PlatformException {
       _cellsResponse = null;
+      _simInfoResponse = null;
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -81,6 +98,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _cellsResponse = cellsResponse;
+      _simInfoResponse = simsResponse;
     });
   }
 
@@ -89,15 +107,43 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Cell info plugin example app'),
         ),
         body: _cellsResponse != null
-            ? Center(
-                child: Text(
-                    'mahmoud = ${currentDBM}\n primary = ${_cellsResponse?.primaryCellList?.length.toString()} \n neighbor = ${_cellsResponse?.neighboringCellList?.length}'),
-              )
-            : null,
+            ? SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Primary cells:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              CellInfoWidget(
+                cellInfos: _cellsResponse?.primaryCellList,
+              ),
+              const SizedBox(height: 8), // optional small spacing
+              const Text(
+                "Secondary cells:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              CellInfoWidget(
+                cellInfos: _cellsResponse?.neighboringCellList,
+              ),
+            ],
+          ),
+        )
+            : const Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
 }
+
+/*
+Text(
+'mahmoud = ${currentDBM}\n primary = ${_cellsResponse?.primaryCellList?.length.toString()} \n neighbor = ${_cellsResponse?.neighboringCellList?.length}'),
+)
+
+ */
