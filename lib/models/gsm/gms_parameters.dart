@@ -3,6 +3,10 @@ import 'gsm_band.dart';
 import 'gsm_signal.dart';
 
 class Gsm {
+  int? subscriptionId;
+  int? cid;
+  int? lac;
+  int? bsic;
   BandGSM? bandGSM;
   SignalGSM? signalGSM;
   String? connectionStatus;
@@ -10,7 +14,12 @@ class Gsm {
   String? type;
 
   Gsm(
-      {this.bandGSM,
+      {
+        this.subscriptionId,
+        this.cid,
+        this.lac,
+        this.bsic,
+        this.bandGSM,
         this.signalGSM,
         this.connectionStatus,
         this.network,
@@ -23,6 +32,10 @@ class Gsm {
         ? new SignalGSM.fromJson(json['signalGSM'])
         : null;
     connectionStatus = json['connectionStatus'];
+    cid = json['cid'];
+    lac = json['lac'];
+    bsic = json['bsic'];
+    subscriptionId = json['subscriptionId'];
     network =
     json['network'] != null ? new Network.fromJson(json['network']) : null;
     type = json['type'];
@@ -36,6 +49,10 @@ class Gsm {
     if (this.signalGSM != null) {
       data['signalGSM'] = this.signalGSM!.toJson();
     }
+    data['subscriptionId'] = subscriptionId;
+    data['cid'] = cid;
+    data['lac'] = lac;
+    data['bsic'] = bsic;
     data['connectionStatus'] = this.connectionStatus;
     if (this.network != null) {
       data['network'] = this.network!.toJson();
