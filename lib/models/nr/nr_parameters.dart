@@ -12,6 +12,7 @@ class Nr {
   String? connectionStatus;
   Network? network;
   String? type;
+  int? subscriptionId;
 
   Nr(
       {this.bandNR,
@@ -21,7 +22,9 @@ class Nr {
         this.tac,
         this.connectionStatus,
         this.network,
-        this.type});
+        this.type,
+        this.subscriptionId
+      });
 
   Nr.fromJson(Map<String, dynamic> json) {
     bandNR =
@@ -33,6 +36,7 @@ class Nr {
         : null;
     tac = json['tac'];
     connectionStatus = json['connectionStatus'];
+    subscriptionId = json['subscriptionId'];
     network =
     json['network'] != null ? new Network.fromJson(json['network']) : null;
     type = json['type'];
@@ -49,6 +53,7 @@ class Nr {
       data['signalNR'] = this.signalNR!.toJson();
     }
     data['tac'] = this.tac;
+    data['subscriptionId'] = subscriptionId;
     data['connectionStatus'] = this.connectionStatus;
     if (this.network != null) {
       data['network'] = this.network!.toJson();
