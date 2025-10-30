@@ -3,6 +3,13 @@ import 'package:cell_info/models/tds_cdma/tds_cdma_signal.dart';
 import 'package:cell_info/models/wcdma/wcdma_band.dart';
 
 class Tdscdma {
+  int? subscriptionId;
+  int? ci;
+  int? cid;
+  int? lac;
+  int? cpid;
+  int? rnc;
+  String? cgi;
   BandWCDMA? bandTDSCDMA;
   SignalTDSCDMA? signalTDSCDMA;
   String? connectionStatus;
@@ -10,7 +17,15 @@ class Tdscdma {
   String? type;
 
   Tdscdma(
-      {this.bandTDSCDMA,
+      {
+        this.subscriptionId,
+        this.ci,
+        this.cid,
+        this.lac,
+        this.cpid,
+        this.rnc,
+        this.cgi,
+        this.bandTDSCDMA,
         this.signalTDSCDMA,
         this.connectionStatus,
         this.network,
@@ -24,6 +39,13 @@ class Tdscdma {
         ? new SignalTDSCDMA.fromJson(json['signalTDSCDMA'])
         : null;
     connectionStatus = json['connectionStatus'];
+    subscriptionId = json['subscriptionId'];
+    ci = json['ci'];
+    cid = json['cid'];
+    lac = json['lac'];
+    cpid = json['cpid'];
+    rnc = json['rnc'];
+    cgi = json['cgi'];
     network =
     json['network'] != null ? new Network.fromJson(json['network']) : null;
     type = json['type'];
@@ -38,6 +60,13 @@ class Tdscdma {
       data['signalTDSCDMA'] = this.signalTDSCDMA!.toJson();
     }
     data['connectionStatus'] = this.connectionStatus;
+    data['subscriptionId'] = this.subscriptionId;
+    data['ci'] = this.ci;
+    data['cid'] = this.cid;
+    data['lac'] = this.lac;
+    data['cpid'] = this.cpid;
+    data['cgi'] = this.cgi;
+    data['rnc'] = this.rnc;;
     if (this.network != null) {
       data['network'] = this.network!.toJson();
     }
