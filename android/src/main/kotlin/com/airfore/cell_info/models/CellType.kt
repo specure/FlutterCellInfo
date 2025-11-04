@@ -1,134 +1,25 @@
-package com.airfore.cell_info.models;
+package com.airfore.cell_info.models
 
-import com.airfore.cell_info.models.cdma.CellCDMA;
-import com.airfore.cell_info.models.gsm.CellGSM;
-import com.airfore.cell_info.models.lte.CellLTE;
-import com.airfore.cell_info.models.nr.CellNR;
-import com.airfore.cell_info.models.tdscdma.CellTDSCDMA;
-import com.airfore.cell_info.models.wcdma.CellWCDMA;
+import com.airfore.cell_info.models.cdma.CellCDMA
+import com.airfore.cell_info.models.gsm.CellGSM
+import com.airfore.cell_info.models.lte.CellLTE
+import com.airfore.cell_info.models.nr.CellNR
+import com.airfore.cell_info.models.tdscdma.CellTDSCDMA
+import com.airfore.cell_info.models.wcdma.CellWCDMA
+import java.io.Serializable
 
-import java.io.Serializable;
-
-public class CellType implements Serializable {
-
-    private String type;
-    private String networkType;
-    private CellCDMA cdma;
-    private CellGSM gsm;
-    private CellLTE lte;
-    private CellNR nr;
-    private CellTDSCDMA tdscdma;
-    private CellWCDMA wcdma;
-    private Boolean nrAvailable;
-    private Boolean nrEnDcAvailable;
-    private Boolean nrConnected;
-    private String nrConnectionStatus;
-    private String nrRejectedReason;
-
-    public CellType() {
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getEnDcAvailable() {
-        return nrEnDcAvailable;
-    }
-
-    public void setEnDcAvailable(Boolean enDcAvalable) {
-        this.nrEnDcAvailable = enDcAvalable;
-    }
-
-    public Boolean getNrAvailable() {
-        return nrAvailable;
-    }
-
-    public void setNrAvailable(Boolean nrAvailable) {
-        this.nrAvailable = nrAvailable;
-    }
-
-    public Boolean getNrConnected() {
-        return nrConnected;
-    }
-
-    public void setNrConnected(Boolean nrConnected) {
-        this.nrConnected = nrConnected;
-    }
-
-    public String getNrConnectionStatus() {
-        return nrConnectionStatus;
-    }
-
-    public void setNrConnectionStatus(String nrConnectionStatus) {
-        this.nrConnectionStatus = nrConnectionStatus;
-    }
-
-    public String getNrRejectedReason() {
-        return nrRejectedReason;
-    }
-
-    public void setNrRejectedReason(String nrRejectedReason) {
-        this.nrRejectedReason = nrRejectedReason;
-    }
-
-    public String getNetworkType() {
-        return networkType;
-    }
-
-    public void setNetworkType(String type) {
-        this.networkType = type;
-    }
-
-    public CellCDMA getCdma() {
-        return cdma;
-    }
-
-    public void setCdma(CellCDMA cdma) {
-        this.cdma = cdma;
-    }
-
-    public CellGSM getGsm() {
-        return gsm;
-    }
-
-    public void setGsm(CellGSM gsm) {
-        this.gsm = gsm;
-    }
-
-    public CellLTE getLte() {
-        return lte;
-    }
-
-    public void setLte(CellLTE lte) {
-        this.lte = lte;
-    }
-
-    public CellNR getNr() {
-        return nr;
-    }
-
-    public void setNr(CellNR nr) {
-        this.nr = nr;
-    }
-
-    public CellTDSCDMA getTdscdma() {
-        return tdscdma;
-    }
-
-    public void setTdscdma(CellTDSCDMA tdscdma) {
-        this.tdscdma = tdscdma;
-    }
-
-    public CellWCDMA getWcdma() {
-        return wcdma;
-    }
-
-    public void setWcdma(CellWCDMA wcdma) {
-        this.wcdma = wcdma;
-    }
+class CellType : Serializable {
+    var type: String? = null
+    var networkType: String? = null
+    var cdma: CellCDMA? = null
+    var gsm: CellGSM? = null
+    var lte: CellLTE? = null
+    var nr: CellNR? = null
+    var tdscdma: CellTDSCDMA? = null
+    var wcdma: CellWCDMA? = null
+    var nrAvailable: Boolean? = null
+    var enDcAvailable: Boolean? = null
+    var nrConnected: Boolean? = null
+    var nrConnectionStatus: String? = null
+    var nrRejectedReason: String? = null
 }

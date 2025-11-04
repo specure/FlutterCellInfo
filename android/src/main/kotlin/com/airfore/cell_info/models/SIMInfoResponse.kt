@@ -1,25 +1,13 @@
-package com.airfore.cell_info.models;
+package com.airfore.cell_info.models
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable
 
-public class SIMInfoResponse implements Serializable {
+class SIMInfoResponse : Serializable {
+    var simInfoList: List<SIMInfo?>? = ArrayList()
 
-    private List<SIMInfo> simInfoList = new ArrayList<>();
+    constructor()
 
-    public SIMInfoResponse() {
-    }
-
-    public SIMInfoResponse(List<SIMInfo> simInfoList) {
-        this.simInfoList = simInfoList;
-    }
-
-    public List<SIMInfo> getSimInfoList() {
-        return simInfoList;
-    }
-
-    public void setSimInfoList(List<SIMInfo> simInfoList) {
-        this.simInfoList = simInfoList;
+    constructor(simInfoList: List<SIMInfo?>?) {
+        this.simInfoList = simInfoList
     }
 }

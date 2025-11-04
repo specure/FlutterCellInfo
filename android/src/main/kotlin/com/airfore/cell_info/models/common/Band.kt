@@ -1,37 +1,9 @@
-package com.airfore.cell_info.models.common;
+package com.airfore.cell_info.models.common
 
-import java.io.Serializable;
+import java.io.Serializable
 
-public class Band implements Serializable {
-
-    private int channelNumber;
-    private int number;
-    private String name;
-
-    public Band() {
-    }
-
-    public int getChannelNumber() {
-        return channelNumber;
-    }
-
-    public void setChannelNumber(int channelNumber) {
-        this.channelNumber = channelNumber;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+open class Band() : Serializable {
+    var channelNumber: Int? = null
+    var number: Int? = null
+    var name: String? = null
 }

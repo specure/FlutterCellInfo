@@ -1,86 +1,17 @@
-package com.airfore.cell_info.models.tdscdma;
+package com.airfore.cell_info.models.tdscdma
 
 
-import com.airfore.cell_info.models.common.Cell;
+import com.airfore.cell_info.models.common.Cell
+import java.io.Serializable
 
-import java.io.Serializable;
-
-public class CellTDSCDMA extends Cell implements Serializable {
-
-    private Integer ci;
-    private Integer lac;
-    private Integer cpid;
-    private Integer cid;
-    private Integer rnc;
-    private String cgi;
-    private BandTDSCDMA bandTDSCDMA;
-    private SignalTDSCDMA signalTDSCDMA;
-
-    public CellTDSCDMA() {
-    }
-
-    public Integer getCi() {
-        return ci;
-    }
-
-    public void setCi(Integer ci) {
-        this.ci = ci;
-    }
-
-    public Integer getLac() {
-        return lac;
-    }
-
-    public void setLac(Integer lac) {
-        this.lac = lac;
-    }
-
-    public Integer getCpid() {
-        return cpid;
-    }
-
-    public void setCpid(Integer cpid) {
-        this.cpid = cpid;
-    }
-
-    public Integer getCid() {
-        return cid;
-    }
-
-    public void setCid(Integer cid) {
-        this.cid = cid;
-    }
-
-    public Integer getRnc() {
-        return rnc;
-    }
-
-    public void setRnc(Integer rnc) {
-        this.rnc = rnc;
-    }
-
-    public String getCgi() {
-        return cgi;
-    }
-
-    public void setCgi(String cgi) {
-        this.cgi = cgi;
-    }
-
-    public BandTDSCDMA getBandTDSCDMA() {
-        return bandTDSCDMA;
-    }
-
-    public void setBandTDSCDMA(BandTDSCDMA bandTDSCDMA) {
-        this.bandTDSCDMA = bandTDSCDMA;
-    }
-
-    public SignalTDSCDMA getSignalTDSCDMA() {
-        return signalTDSCDMA;
-    }
-
-    public void setSignalTDSCDMA(SignalTDSCDMA signalTDSCDMA) {
-        this.signalTDSCDMA = signalTDSCDMA;
-    }
+class CellTDSCDMA : Cell(), Serializable {
+    var ci: Int? = null
+    var lac: Int? = null
+    var cpid: Int? = null
+    var cid: Int? = null
+    var rnc: Int? = null
+    var cgi: String? = null
+    var bandTDSCDMA: BandTDSCDMA? = null
+    var signalTDSCDMA: SignalTDSCDMA? = null
 }
 

@@ -67,6 +67,7 @@ class NetMonster {
             }
             merged.forEach { cell ->
                 val cellData = CellData()
+                Log.d("Netmonster RAW:" , "${cell.toString()}")
                 cellData.timestamp = System.currentTimeMillis()
                 Log.d("timestamptimestamp", "requestData: ${cellData.timestamp}")
                 when (cell) {

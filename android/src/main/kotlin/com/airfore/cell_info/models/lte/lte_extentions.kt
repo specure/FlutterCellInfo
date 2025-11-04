@@ -17,73 +17,51 @@ fun getLte(cell: CellLte, cellData: CellData): CellLTE {
     cellLTE.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
-    cellLTE.bandLTE = BandLTE()
-    cell.band?.let {
-        cellLTE.bandLTE.channelNumber = it.channelNumber
-        cellData.bandChannelNumber = it.channelNumber
-
-        it.number?.let {
-            cellLTE.bandLTE.number = it
-            cellData.bandNumber = it
-        }
-        cellLTE.bandLTE.downlinkEarfcn = it.downlinkEarfcn
-        it.name?.let {
-            cellLTE.bandLTE.name = it
-            cellData.bandName = it
-        }
+    cellLTE.bandLTE = BandLTE().apply {
+        channelNumber = cell.band?.channelNumber
+        number = cell.band?.number
+        name = cell.band?.name
+        downlinkEarfcn = cell.band?.downlinkEarfcn
     }
+    cell.band?.let {
+        cellData.bandChannelNumber = it.channelNumber
+        cellData.bandNumber = it.number
+        cellData.bandName = it.name
+        cellData.downlinkEarfcn = it.downlinkEarfcn
+    }
+    cellLTE.network = Network().apply {
+      iso = cell.network?.iso
+      mcc = cell.network?.mcc
+      mnc = cell.network?.mnc
 
-    cellLTE.network =
-            Network()
+    }
     cell.network?.let {
-        cellLTE.network.iso = it.iso
         cellData.iso = it.iso
-
-        cellLTE.network.mcc = it.mcc
         cellData.mcc = it.mcc
-
-        cellLTE.network.mnc = it.mnc
         cellData.mnc = it.mnc
     }
 
-    cellLTE.signalLTE = SignalLTE()
-    cell.signal.let {
-        cell.signal.cqi?.let {
-            cellLTE.signalLTE.cqi = it
-            cellData.cqi = it
-        }
-        cell.signal.rsrpAsu?.let {
-            cellLTE.signalLTE.rsrpAsu = it
-            cellData.rsrpAsu = it
-        }
-        cell.signal.rssiAsu?.let {
-            cellLTE.signalLTE.rssiAsu = it
-            cellData.rssiAsu = it
-        }
-        cell.signal.snr?.let {
-            cellLTE.signalLTE.snr = it
-            cellData.snr = it
-        }
-        cell.signal.timingAdvance?.let {
-            cellLTE.signalLTE.timingAdvance = it
-            cellData.timingAdvance = it
-        }
-        cell.signal.dbm?.let {
-            cellLTE.signalLTE.dbm = it
-            cellData.dbm = it
-        }
-        cell.signal.rssi?.let {
-            cellLTE.signalLTE.rssi = it
-            cellData.rssi = it
-        }
-        cell.signal.rsrp?.let {
-            cellLTE.signalLTE.rsrp = it
-            cellData.rsrp = it
-        }
-        cell.signal.rsrq?.let {
-            cellLTE.signalLTE.rsrq = it
-            cellData.rsrq = it
-        }
+    cellLTE.signalLTE = SignalLTE().apply {
+        cqi = cell.signal?.cqi
+        rsrpAsu = cell.signal?.rsrpAsu
+        rssiAsu = cell.signal?.rssiAsu
+        snr = cell.signal?.snr
+        timingAdvance = cell.signal?.timingAdvance
+        dbm = cell.signal?.dbm
+        rssi = cell.signal?.rssi
+        rsrp = cell.signal?.rsrp
+        rsrq = cell.signal?.rsrq
+    }
+    cell.signal?.let {
+        cellData.cqi = it.cqi
+        cellData.rsrpAsu = it.rsrpAsu
+        cellData.rssiAsu = it.rssiAsu
+        cellData.snr = it.snr
+        cellData.timingAdvance = it.timingAdvance
+        cellData.dbm = it.dbm
+        cellData.rssi = it.rssi
+        cellData.rsrp = it.rsrp
+        cellData.rsrq = it.rsrq
     }
 
     cellLTE.eci = cell.eci
@@ -113,31 +91,30 @@ fun getLteFake(cell: CellLte? = null): CellLTE {
     cellLTE.bandwidth = 0
     cellLTE.connectionStatus = " cell.connectionStatus.toString()"
 
-    cellLTE.bandLTE = BandLTE()
-    cellLTE.bandLTE.channelNumber = 0
-    cellLTE.bandLTE.number = 0
-    cellLTE.bandLTE.name = ""
-    cellLTE.bandLTE.downlinkEarfcn = 0
+    cellLTE.bandLTE = BandLTE().apply {
+        channelNumber = 0
+        number = 0
+        name = ""
+        downlinkEarfcn = 0
+    }
 
+    cellLTE.network = Network().apply {
+        iso = ""
+        mcc = "it.mcc"
+        mnc = ""
+    }
 
-    cellLTE.network =
-            Network()
-
-    cellLTE.network.iso = ""
-    cellLTE.network.mcc = "it.mcc"
-    cellLTE.network.mnc = ""
-
-    cellLTE.signalLTE = SignalLTE()
-    cellLTE.signalLTE.cqi = 0
-    cellLTE.signalLTE.rsrpAsu = 0
-    cellLTE.signalLTE.rssiAsu = 0
-    cellLTE.signalLTE.snr = 0.0
-    cellLTE.signalLTE.timingAdvance = 0
-    cellLTE.signalLTE.dbm = 0
-    cellLTE.signalLTE.rssi = 0
-    cellLTE.signalLTE.rsrp = 0.0
-    cellLTE.signalLTE.rsrq = 0.0
-
+    cellLTE.signalLTE = SignalLTE().apply {
+        cqi = 0
+        rsrpAsu = 0
+        rssiAsu = 0
+        snr = 0.0
+        timingAdvance = 0
+        dbm = 0
+        rssi = 0
+        rsrp = 0.0
+        rsrq = 0.0
+    }
 
     cellLTE.eci = 0
     cellLTE.cid = 0

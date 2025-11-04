@@ -10,7 +10,6 @@ fun getGsm(cell: CellGsm, cellData: CellData): CellGSM {
     cellGSM.type = "GSM"
     cellData.type = "GSM"
 
-    cellGSM.bandGSM = BandGSM()
     cellGSM.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
@@ -23,45 +22,34 @@ fun getGsm(cell: CellGsm, cellData: CellData): CellGSM {
     cellGSM.bsic = cell.bsic
     cellData.bsic = cell.bsic
 
-    cellGSM.bandGSM = BandGSM()
-    cell.band?.let {
-        cellGSM.bandGSM.channelNumber = it.channelNumber
-        cellData.bandChannelNumber = it.channelNumber
-        it.number?.let {
-            cellGSM.bandGSM.number = it
-            cellData.bandNumber = it
-        }
-        it.name?.let {
-            cellGSM.bandGSM.name = it
-            cellData.bandName = it
-        }
-        cellGSM.bandGSM.arfcn = it.arfcn
-        cellData.arfcn = it.arfcn
+    cellGSM.bandGSM = BandGSM().apply {
+        channelNumber = cell.band?.channelNumber
+        number = cell.band?.number
+        name = cell.band?.name
+        arfcn = cell.band?.arfcn
+    }
+    cellData.bandChannelNumber = cell.band?.channelNumber
+    cellData.bandNumber = cell.band?.number
+    cellData.bandName = cell.band?.name
+    cellData.arfcn = cell.band?.arfcn
+
+    cellGSM.network = Network().apply {
+        iso = cell.network?.iso
+        mcc = cell.network?.mcc
+        mnc = cell.network?.mnc
     }
 
-    cellGSM.network =
-        Network()
-    cell.network?.let {
-        cellGSM.network.iso = it.iso
-        cellGSM.network.mcc = it.mcc
-        cellGSM.network.mnc = it.mnc
+    cellGSM.signalGSM = SignalGSM().apply {
+        bitErrorRate = cell.signal.bitErrorRate
+        rssi = cell.signal.rssi
+        timingAdvance = cell.signal.timingAdvance
+        dbm = cell.signal.dbm
     }
 
-    cellGSM.signalGSM = SignalGSM()
-    cell.signal.let {
-        cell.signal.bitErrorRate?.let {
-            cellGSM.signalGSM.bitErrorRate = it
-        }
-        cell.signal.rssi?.let {
-            cellGSM.signalGSM.rssi = it
-        }
-        cell.signal.timingAdvance?.let {
-            cellGSM.signalGSM.timingAdvance = it
-        }
-        cell.signal.dbm?.let {
-            cellGSM.signalGSM.dbm = it
-        }
-    }
+    cellData.dbm = cell.signal.dbm
+    cellData.bitErrorRate = cell.signal.bitErrorRate
+    cellData.rssi = cell.signal.rssi
+    cellData.timingAdvance = cell.signal.timingAdvance
 
     cellGSM.subscriptionId = cell.subscriptionId
     cellData.subscriptionId = cell.subscriptionId
@@ -77,25 +65,25 @@ fun getGsmFake(cell: CellGsm? = null): CellGSM {
     cellGSM.bandGSM = BandGSM()
     cellGSM.connectionStatus = "cell.connectionStatus.toString()"
 
-    cellGSM.bandGSM = BandGSM()
-    cellGSM.bandGSM.channelNumber = 2
-    cellGSM.bandGSM.number = 0
-    cellGSM.bandGSM.name = ""
-    cellGSM.bandGSM.arfcn = 0
+    cellGSM.bandGSM = BandGSM().apply {
+        channelNumber = 2
+        number = 0
+        name = ""
+        arfcn = 0
+    }
 
+    cellGSM.network = Network().apply {
+        iso = ""
+        mcc = ""
+        mnc = ""
+    }
 
-    cellGSM.network =
-        Network()
-    cellGSM.network.iso = ""
-    cellGSM.network.mcc = ""
-    cellGSM.network.mnc = ""
-
-    cellGSM.signalGSM = SignalGSM()
-
-    cellGSM.signalGSM.bitErrorRate = 0
-    cellGSM.signalGSM.rssi = 0
-    cellGSM.signalGSM.timingAdvance = 0
-    cellGSM.signalGSM.dbm = 0
+    cellGSM.signalGSM = SignalGSM().apply {
+        bitErrorRate = 0
+        rssi = 0
+        timingAdvance = 0
+        dbm = 0
+    }
 
     return cellGSM
 }

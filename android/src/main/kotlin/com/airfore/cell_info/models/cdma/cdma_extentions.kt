@@ -5,7 +5,7 @@ import com.airfore.cell_info.models.common.Band
 import com.airfore.cell_info.models.common.Network
 import cz.mroczis.netmonster.core.model.cell.CellCdma
 
-fun getCdma(cell: CellCdma,cellData: CellData): CellCDMA {
+fun getCdma(cell: CellCdma, cellData: CellData): CellCDMA {
 
     val cellCDMA = CellCDMA()
     cellCDMA.type = "CDMA"
@@ -29,58 +29,43 @@ fun getCdma(cell: CellCdma,cellData: CellData): CellCDMA {
     cellCDMA.connectionStatus = cell.connectionStatus.toString()
     cellData.connectionStatus = cell.connectionStatus.toString()
 
-    cellCDMA.band = Band()
-    cell.band?.let {
-        cellCDMA.band.channelNumber = it.channelNumber
-        cellData.bandChannelNumber = it.channelNumber
-        it.number?.let {
-            cellCDMA.band.number = it
-            cellData.bandNumber = it
-        }
-        it.name?.let {
-            cellCDMA.band.name = it
-            cellData.bandName = it
-        }
+    cellCDMA.band = Band().apply {
+        channelNumber = cell.band?.channelNumber
+        number = cell.band?.number
+        name = cell.band?.name
+    }
+    cell.band?.also {
+        cellData.bandChannelNumber = it?.channelNumber
+        cellData.bandNumber = it?.number
+        cellData.bandName = it?.name
     }
 
-    cellCDMA.network =
-        Network()
-    cell.network?.let {
-        cellCDMA.network.iso = it.iso
-        cellData.iso = it.iso
-        cellCDMA.network.mcc = it.mcc
-        cellData.mcc = it.mcc
-        cellCDMA.network.mnc = it.mnc
-        cellData.mnc = it.mnc
+    cellCDMA.network = Network().apply {
+        iso = cell.network?.iso
+        mcc = cell.network?.mcc
+        mnc = cell.network?.mnc
     }
-    cellCDMA.signalCDMA = SignalCDMA()
-    cell.signal.let {
-        cell.signal.cdmaEcio?.let {
-            cellCDMA.signalCDMA.cdmaEcio = it
-            cellData.cdmaEcio = it
-        }
-        cell.signal.cdmaRssi?.let {
-            cellCDMA.signalCDMA.cdmaRssi = it
-            cellData.cdmaRssi = it
-        }
-        cell.signal.evdoRssi?.let {
-            cellCDMA.signalCDMA.evdoRssi = it
-            cellData.evdoRssi = it
-        }
-        cell.signal.evdoSnr?.let {
-            cellCDMA.signalCDMA.evdoSnr = it
-            cellData.evdoSnr = it
-        }
-        cell.signal.evdoEcio?.let {
-            cellCDMA.signalCDMA.evdoEcio = it
-            cellData.evdoEcio = it
-        }
-        cell.signal.dbm?.let {
-            cellCDMA.signalCDMA.dbm = it
-            cellData.dbm = it
-        }
+    cell.network?.also {
+        cellData.iso = it?.iso
+        cellData.mcc = it?.mcc
+        cellData.mnc = it?.mnc
     }
-
+    cellCDMA.signalCDMA = SignalCDMA().apply {
+        cdmaRssi = cell.signal?.cdmaRssi
+        cdmaEcio = cell.signal?.cdmaEcio
+        evdoRssi = cell.signal?.evdoRssi
+        evdoSnr = cell.signal?.evdoSnr
+        evdoEcio = cell.signal?.evdoEcio
+        dbm = cell.signal?.dbm
+    }
+    cell.signal?.also {
+        cellData.cdmaEcio = it?.cdmaEcio
+        cellData.cdmaRssi = it?.cdmaRssi
+        cellData.evdoRssi = it?.evdoRssi
+        cellData.evdoSnr = it?.evdoSnr
+        cellData.evdoEcio = it?.evdoEcio
+        cellData.dbm = it?.dbm
+    }
 
     cellCDMA.subscriptionId = cell.subscriptionId
     cellData.subscriptionId = cell.subscriptionId
@@ -96,26 +81,26 @@ fun getCdmaFake(cell: CellCdma? = null): CellCDMA {
     cellCDMA.bid = 0
     cellCDMA.connectionStatus =" cell.connectionStatus.toString()"
 
-    cellCDMA.band = Band()
-    cellCDMA.band.channelNumber = 0
-    cellCDMA.band.number = 0
-    cellCDMA.band.name = ""
+    cellCDMA.band = Band().apply {
+        channelNumber = 0
+        number = 0
+        name = ""
+    }
 
+    cellCDMA.network = Network().apply {
+        iso = ""
+        mcc = ""
+        mnc = ""
+    }
 
-    cellCDMA.network =
-        Network()
-    cellCDMA.network.iso = ""
-    cellCDMA.network.mcc = ""
-    cellCDMA.network.mnc = ""
-
-
-    cellCDMA.signalCDMA = SignalCDMA()
-    cellCDMA.signalCDMA.cdmaEcio = 0.0
-    cellCDMA.signalCDMA.cdmaRssi = 0
-    cellCDMA.signalCDMA.evdoRssi = 0
-    cellCDMA.signalCDMA.evdoSnr = 0
-    cellCDMA.signalCDMA.evdoEcio = 0.0
-    cellCDMA.signalCDMA.dbm = 0
+    cellCDMA.signalCDMA = SignalCDMA().apply {
+        cdmaRssi = 0
+        cdmaEcio = 0.0
+        evdoRssi = 0
+        evdoSnr = 0
+        evdoEcio = 0.0
+        dbm = 0
+    }
 
     return cellCDMA
 }

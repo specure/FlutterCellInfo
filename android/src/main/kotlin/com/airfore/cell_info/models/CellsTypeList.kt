@@ -1,21 +1,7 @@
-package com.airfore.cell_info.models;
+package com.airfore.cell_info.models
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable
 
-public class CellsTypeList implements Serializable {
-
-    private List<CellType> primaryCellList = new ArrayList<>();
-
-    public CellsTypeList() {
-    }
-
-    public List<CellType> getPrimaryCellList() {
-        return primaryCellList;
-    }
-
-    public void setPrimaryCellList(List<CellType> primaryCellList) {
-        this.primaryCellList = primaryCellList;
-    }
+class CellsTypeList : Serializable {
+    var primaryCellList: List<CellType?>? = ArrayList()
 }

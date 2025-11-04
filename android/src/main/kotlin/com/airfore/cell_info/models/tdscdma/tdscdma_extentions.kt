@@ -32,52 +32,49 @@ fun getTdscdma(cell: CellTdscdma, cellData: CellData): CellTDSCDMA {
     cellTDSCDMA.cgi = cell.cgi
     cellData.cgi = cell.cgi
 
-    cellTDSCDMA.bandTDSCDMA = BandTDSCDMA()
+    cellTDSCDMA.bandTDSCDMA = BandTDSCDMA().apply {
+        this.channelNumber = cell.band?.channelNumber
+        this.name = cell.band?.name
+        this.number = cell.band?.number
+        this.downlinkUarfcn = cell.band?.downlinkUarfcn
+    }
     cell.band?.let {
-        cellTDSCDMA.bandTDSCDMA.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
-
-        cellTDSCDMA.bandTDSCDMA.number = it.number!!
         cellData.bandNumber = it.number
-
-        cellTDSCDMA.bandTDSCDMA.name = it.name!!
-        cellData.bandName = it.name!!
-
-        cellTDSCDMA.bandTDSCDMA.downlinkUarfcn = it.downlinkUarfcn
+        cellData.bandName = it.name
         cellData.downlinkUarfcn = it.downlinkUarfcn
     }
 
-    cellTDSCDMA.network =
-            Network()
+    cellTDSCDMA.network = Network().apply {
+        this.iso = cell.network?.iso
+        this.mcc = cell.network?.mcc
+        this.mnc = cell.network?.mnc
+    }
     cell.network?.let {
-        cellTDSCDMA.network.iso = it.iso
         cellData.iso = it.iso
-        cellTDSCDMA.network.mcc = it.mcc
         cellData.mcc = it.mcc
-        cellTDSCDMA.network.mnc = it.mnc
         cellData.mnc = it.mnc
     }
 
-    cellTDSCDMA.signalTDSCDMA = SignalTDSCDMA()
-    cell.signal.let {
-        cellTDSCDMA.signalTDSCDMA.bitErrorRate = cell.signal.bitErrorRate!!
-        cellData.bitErrorRate = cell.signal.bitErrorRate!!
-        cellTDSCDMA.signalTDSCDMA.rssi = cell.signal.rssi!!
-        cellData.rssi = cell.signal.rssi!!
-        cellTDSCDMA.signalTDSCDMA.rscp = cell.signal.rscp!!
-        cellData.rscp = cell.signal.rscp!!
-        cellTDSCDMA.signalTDSCDMA.rscpAsu = cell.signal.rscpAsu!!
-        cellData.rscpAsu = cell.signal.rscpAsu!!
-        cellTDSCDMA.signalTDSCDMA.rssiAsu = cell.signal.rssiAsu!!
-        cellData.rssiAsu = cell.signal.rssiAsu!!
-        cellTDSCDMA.signalTDSCDMA.dbm = cell.signal.dbm!!
-        cellData.dbm = cell.signal.dbm!!
+    cellTDSCDMA.signalTDSCDMA = SignalTDSCDMA().apply {
+        this.bitErrorRate = cell.signal?.bitErrorRate
+        this.rssi = cell.signal?.rssi
+        this.rscp = cell.signal?.rscp
+        this.rscpAsu = cell.signal?.rscpAsu
+        this.rssiAsu = cell.signal?.rssiAsu
+        this.dbm = cell.signal?.dbm
     }
-
+    cell.signal.let {
+        cellData.bitErrorRate = cell.signal?.bitErrorRate
+        cellData.rssi = cell.signal?.rssi
+        cellData.rscp = cell.signal?.rscp
+        cellData.rscpAsu = cell.signal?.rscpAsu
+        cellData.rssiAsu = cell.signal?.rssiAsu
+        cellData.dbm = cell.signal?.dbm
+    }
 
     cellTDSCDMA.subscriptionId = cell.subscriptionId
     cellData.subscriptionId = cell.subscriptionId
-
 
     return cellTDSCDMA
 }
@@ -90,25 +87,27 @@ fun getTdscdmaFake(cell: CellTdscdma? = null): CellTDSCDMA {
     cellGSM.bandTDSCDMA = BandTDSCDMA()
     cellGSM.connectionStatus = "cell.connectionStatus.toString()"
 
-    cellGSM.bandTDSCDMA = BandTDSCDMA()
-    cellGSM.bandTDSCDMA.channelNumber = 0
-    cellGSM.bandTDSCDMA.number = 0
-    cellGSM.bandTDSCDMA.name = " it.name!!"
-    cellGSM.bandTDSCDMA.downlinkUarfcn = 0
+    cellGSM.bandTDSCDMA = BandTDSCDMA().apply {
+        this.channelNumber = 0
+        this.name = " it.name!!"
+        this.number = 0
+        this.downlinkUarfcn = 0
+    }
 
-    cellGSM.network =
-            Network()
-    cellGSM.network.iso = ""
-    cellGSM.network.mcc = ""
-    cellGSM.network.mnc = ""
+    cellGSM.network = Network().apply {
+        this.iso = ""
+        this.mcc = ""
+        this.mnc = ""
+    }
 
-    cellGSM.signalTDSCDMA = SignalTDSCDMA()
-    cellGSM.signalTDSCDMA.bitErrorRate = 0
-    cellGSM.signalTDSCDMA.rssi = 0
-    cellGSM.signalTDSCDMA.rscp = 0
-    cellGSM.signalTDSCDMA.rscpAsu = 0
-    cellGSM.signalTDSCDMA.rssiAsu = 0
-    cellGSM.signalTDSCDMA.dbm = 0
+    cellGSM.signalTDSCDMA = SignalTDSCDMA().apply {
+        this.bitErrorRate = 0
+        this.rssi = 0
+        this.rscp = 0
+        this.rscpAsu = 0
+        this.rssiAsu = 0
+        this.dbm = 0
+    }
 
     return cellGSM
 }

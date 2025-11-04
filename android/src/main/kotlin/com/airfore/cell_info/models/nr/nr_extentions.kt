@@ -24,71 +24,54 @@ fun getNr(cell: CellNr, cellData: CellData): CellNR {
     cellNR.connectionStatus = cellNewRadio.connectionStatus.toString()
     cellData.connectionStatus = cellNewRadio.connectionStatus.toString()
 
-    cellNR.bandNR = BandNR()
+    cellNR.bandNR = BandNR().apply {
+        this.name = cellNewRadio.band?.name
+        this.number = cellNewRadio.band?.number
+        this.channelNumber = cellNewRadio.band?.channelNumber
+        this.downlinkArfcn = cellNewRadio.band?.downlinkArfcn
+        this.downlinkFrequency = cellNewRadio.band?.downlinkFrequency
+    }
     cellNewRadio.band?.let {
-        cellNR.bandNR.channelNumber = it.channelNumber
         cellData.bandChannelNumber = it.channelNumber
-
-        cellNR.bandNR.number = it.number ?: 0
-        cellData.bandNumber = it.number ?: 0
-
-        cellNR.bandNR.downlinkArfcn = it.downlinkArfcn
+        cellData.bandNumber = it.number
         cellData.bandDownlinkArfcn = it.downlinkArfcn
-
-        cellNR.bandNR.downlinkFrequency = it.downlinkFrequency
         cellData.bandDownlinkFrequency = it.downlinkFrequency
-
-        cellNR.bandNR.name = it.name ?: ""
         cellData.bandName = it.name
     }
 
-    cellNR.network =
-        Network()
+    cellNR.network = Network().apply {
+        this.iso = cellNewRadio.network?.iso
+        this.mcc = cellNewRadio.network?.mcc
+        this.mnc = cellNewRadio.network?.mnc
+    }
     cellNewRadio.network?.let {
-        cellNR.network.iso = it.iso
         cellData.iso = it.iso
-
-        cellNR.network.mcc = it.mcc
         cellData.mcc = it.mcc
-
-        cellNR.network.mnc = it.mnc
         cellData.mnc = it.mnc
     }
 
-    cellNR.signalNR = SignalNR()
+    cellNR.signalNR = SignalNR().apply {
+        this.dbm = cellNewRadio.signal?.dbm
+        this.ssRsrp = cellNewRadio.signal?.ssRsrp
+        this.ssRsrq = cellNewRadio.signal?.ssRsrq
+        this.ssSinr = cellNewRadio.signal?.ssSinr
+        this.ssRsrpAsu = cellNewRadio.signal?.ssRsrpAsu
+        this.csiRsrp = cellNewRadio.signal?.csiRsrp
+        this.csiRsrpAsu = cellNewRadio.signal?.csiRsrpAsu
+        this.csiRsrq = cellNewRadio.signal?.csiRsrq
+        this.csiSinr = cellNewRadio.signal?.csiSinr
+    }
     val signalNR = cellNewRadio.signal
     signalNR?.let {
-        try {
-            Log.d("signalNR:", "$signalNR")
-            cellNR.signalNR.csiRsrp = it.csiRsrp ?: 0
-            cellData.csiRsrp = it.csiRsrp ?: 0
-
-            cellNR.signalNR.csiRsrpAsu = it.csiRsrpAsu ?: 0
-            cellData.csiRsrpAsu = it.csiRsrpAsu ?: 0
-
-            cellNR.signalNR.csiRsrq = it.csiRsrq ?: 0
-            cellData.csiRsrq = it.csiRsrq ?: 0
-
-            cellNR.signalNR.csiSinr = it.csiSinr ?: 0
-            cellData.csiSinr = it.csiSinr ?: 0
-
-            cellNR.signalNR.ssRsrq = it.ssRsrq ?: 0
-            cellData.ssRsrq = it.ssRsrq ?: 0
-
-            cellNR.signalNR.ssSinr = it.ssSinr ?: 0
-            cellData.ssSinr = it.ssSinr ?: 0
-
-            cellNR.signalNR.ssRsrp = it.ssRsrp ?: 0
-            cellData.ssRsrp = it.ssRsrp ?: 0
-
-            cellNR.signalNR.ssRsrpAsu = it.ssRsrpAsu ?: 0
-            cellData.ssRsrpAsu = it.ssRsrpAsu ?: 0
-
-            cellNR.signalNR.dbm = it.dbm ?: 0
-            cellData.dbm = it.dbm ?: 0
-        } catch (e: Exception) {
-            e.localizedMessage?.let { ex -> Log.e("signalNR", ex) }
-        }
+        cellData.csiRsrp = it.csiRsrp
+        cellData.csiRsrpAsu = it.csiRsrpAsu
+        cellData.csiRsrq = it.csiRsrq
+        cellData.csiSinr = it.csiSinr
+        cellData.ssRsrq = it.ssRsrq
+        cellData.ssSinr = it.ssSinr
+        cellData.ssRsrp = it.ssRsrp
+        cellData.ssRsrpAsu = it.ssRsrpAsu
+        cellData.dbm = it.dbm
     }
 
     cellNR.subscriptionId = cellNewRadio.subscriptionId
